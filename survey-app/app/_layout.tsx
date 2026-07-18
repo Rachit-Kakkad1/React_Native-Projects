@@ -15,6 +15,15 @@ export const unstable_settings = {
 };
 
 function CustomDrawerContent(props: any) {
+  // Find which tab is active to highlight corresponding sidebar link
+  const state = props.state;
+  const activeRoute = state?.routes[state.index];
+  const nestedState = activeRoute?.state;
+  const activeTabName = nestedState?.routes[nestedState.index]?.name || 'index';
+
+  const isDashboardActive = activeTabName === 'index';
+  const isSurveyActive = activeTabName === 'new-survey';
+
   return (
     <DrawerContentScrollView {...props} contentContainerStyle={styles.drawerScrollView}>
       {/* 1. Custom Profile Header - Minimalist Side-by-Side Design */}
@@ -32,17 +41,42 @@ function CustomDrawerContent(props: any) {
         </View>
       </View>
 
-      {/* 2. Menu Navigation List */}
+      {/* 2. Custom Menu Navigation List (Google/Apple design system highlights) */}
       <View style={styles.listContainer}>
-        <DrawerItemList {...props} />
+        {/* Dashboard Link */}
+        <DrawerItem
+          label="Dashboard"
+          icon={({ size }) => (
+            <Ionicons 
+              name={isDashboardActive ? "grid" : "grid-outline"} 
+              size={22} 
+              color={isDashboardActive ? '#3B82F6' : '#64748B'} 
+            />
+          )}
+          focused={isDashboardActive}
+          onPress={() => props.navigation.navigate('(tabs)', { screen: 'index' })}
+          activeTintColor="#3B82F6"
+          inactiveTintColor="#64748B"
+          activeBackgroundColor="#EFF6FF"
+          labelStyle={{ fontSize: 14, fontWeight: '600', marginLeft: -8 }}
+          style={{ borderRadius: 12, marginVertical: 4, paddingHorizontal: 8, marginHorizontal: 12 }}
+        />
         
-        {/* Modern Custom Drawer Item for Survey */}
+        {/* Survey Link */}
         <DrawerItem
           label="Survey"
-          icon={({ color, size }) => <Ionicons name="document-text-outline" size={size} color={color} />}
+          icon={({ size }) => (
+            <Ionicons 
+              name={isSurveyActive ? "document-text" : "document-text-outline"} 
+              size={22} 
+              color={isSurveyActive ? '#3B82F6' : '#64748B'} 
+            />
+          )}
+          focused={isSurveyActive}
           onPress={() => props.navigation.navigate('(tabs)', { screen: 'new-survey' })}
           activeTintColor="#3B82F6"
           inactiveTintColor="#64748B"
+          activeBackgroundColor="#EFF6FF"
           labelStyle={{ fontSize: 14, fontWeight: '600', marginLeft: -8 }}
           style={{ borderRadius: 12, marginVertical: 4, paddingHorizontal: 8, marginHorizontal: 12 }}
         />

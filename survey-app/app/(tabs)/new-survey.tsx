@@ -7,12 +7,15 @@ import {
   TextInput, 
   Pressable, 
   Alert,
-  Image 
+  Image,
+  Platform,
+  Modal
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from 'expo-router';
 import { DrawerActions } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 export default function CreateSurveyScreen() {
   const navigation = useNavigation();
@@ -22,11 +25,27 @@ export default function CreateSurveyScreen() {
   const [clientName, setClientName] = useState('');
   const [description, setDescription] = useState('');
   const [priority, setPriority] = useState<'High' | 'Medium' | 'Low'>('Medium');
+  
+  // Date Picker state management
   const [date, setDate] = useState(new Date().toISOString().split('T')[0]); // Prefill with today's date (YYYY-MM-DD)
+  const [dateObject, setDateObject] = useState(new Date());
+  const [showDatePicker, setShowDatePicker] = useState(false);
 
   // Handler to open the sidebar drawer
   const handleOpenDrawer = () => {
     navigation.dispatch(DrawerActions.openDrawer());
+  };
+
+  // Date selection callback
+  const onChangeDate = (event: any, selectedDate?: Date) => {
+    if (Platform.OS === 'android') {
+      setShowDatePicker(false);
+    }
+    if (selectedDate) {
+      setDateObject(selectedDate);
+      const formatted = selectedDate.toISOString().split('T')[0];
+      setDate(formatted);
+    }
   };
 
   // Form submission and validation
@@ -59,6 +78,7 @@ export default function CreateSurveyScreen() {
             setDescription('');
             setPriority('Medium');
             setDate(new Date().toISOString().split('T')[0]);
+            setDateObject(new Date());
           }
         }
       ]
@@ -83,7 +103,7 @@ export default function CreateSurveyScreen() {
 
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
         <View style={styles.formCard}>
-          <Text style={styles.formTitle}>📋 New Inspection Form</Text>
+          <Text style={styles.formTitle}>New Inspection Form</Text>
           <Text style={styles.formSubtitle}>Enter site information and details below to log a new survey.</Text>
 
           {/* Site Name Field */}
@@ -119,16 +139,17 @@ export default function CreateSurveyScreen() {
           {/* Date Field */}
           <View style={styles.inputContainer}>
             <Text style={styles.inputLabel}>Survey Date <Text style={styles.requiredStar}>*</Text></Text>
-            <View style={styles.inputWrapper}>
+            <Pressable onPress={() => setShowDatePicker(true)} style={styles.inputWrapper}>
               <Ionicons name="calendar-outline" size={18} color="#64748B" style={styles.inputIcon} />
               <TextInput
                 style={styles.textInput}
                 placeholder="YYYY-MM-DD"
                 placeholderTextColor="#94A3B8"
                 value={date}
-                onChangeText={setDate}
+                editable={false}
+                pointerEvents="none"
               />
-            </View>
+            </Pressable>
           </View>
 
           {/* Priority Field */}
@@ -194,6 +215,42 @@ export default function CreateSurveyScreen() {
           </Pressable>
         </View>
       </ScrollView>
+
+      {/* Cross-platform Calendar Picker Dialog */}
+      {Platform.OS === 'ios' ? (
+        <Modal
+          visible={showDatePicker}
+          transparent={true}
+          animationType="slide"
+        >
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalContent}>
+              <View style={styles.modalHeader}>
+                <Text style={styles.modalTitle}>Select Date</Text>
+                <Pressable onPress={() => setShowDatePicker(false)}>
+                  <Text style={styles.doneButtonText}>Done</Text>
+                </Pressable>
+              </View>
+              <DateTimePicker
+                value={dateObject}
+                mode="date"
+                display="spinner"
+                onChange={onChangeDate}
+                textColor="#0F172A"
+              />
+            </View>
+          </View>
+        </Modal>
+      ) : (
+        showDatePicker && (
+          <DateTimePicker
+            value={dateObject}
+            mode="date"
+            display="default"
+            onChange={onChangeDate}
+          />
+        )
+      )}
     </SafeAreaView>
   );
 }
@@ -287,9 +344,9 @@ const styles = StyleSheet.create({
   inputWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
-    borderWidth: 1,
+    borderWidth: 1.5,
     borderColor: '#E2E8F0',
-    borderRadius: 12,
+    borderRadius: 14,
     backgroundColor: '#F8FAFC',
     paddingHorizontal: 12,
   },
@@ -298,16 +355,16 @@ const styles = StyleSheet.create({
   },
   textInput: {
     flex: 1,
-    height: 46,
+    height: 48,
     color: '#0F172A',
     fontSize: 14,
     fontWeight: '500',
   },
   multilineWrapper: {
-    paddingVertical: 8,
+    paddingVertical: 10,
   },
   multilineInput: {
-    height: 100,
+    height: 120,
   },
   priorityRow: {
     flexDirection: 'row',
@@ -348,5 +405,40 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontSize: 15,
     fontWeight: '700',
+  },
+  modalOverlay: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    backgroundColor: 'rgba(0, 0, 0, 0.4)',
+  },
+  modalContent: {
+    backgroundColor: '#FFFFFF',
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    paddingBottom: 40,
+    paddingHorizontal: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: -4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 10,
+    elevation: 10,
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F1F5F9',
+  },
+  modalTitle: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#0F172A',
+  },
+  doneButtonText: {
+    fontSize: 15,
+    fontWeight: '700',
+    color: '#3B82F6',
   },
 });
