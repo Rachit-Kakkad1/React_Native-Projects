@@ -35,6 +35,17 @@ function CustomDrawerContent(props: any) {
       {/* 2. Menu Navigation List */}
       <View style={styles.listContainer}>
         <DrawerItemList {...props} />
+        
+        {/* Modern Custom Drawer Item for Survey */}
+        <DrawerItem
+          label="Survey"
+          icon={({ color, size }) => <Ionicons name="document-text-outline" size={size} color={color} />}
+          onPress={() => props.navigation.navigate('(tabs)', { screen: 'new-survey' })}
+          activeTintColor="#3B82F6"
+          inactiveTintColor="#64748B"
+          labelStyle={{ fontSize: 14, fontWeight: '600', marginLeft: -8 }}
+          style={{ borderRadius: 12, marginVertical: 4, paddingHorizontal: 8, marginHorizontal: 12 }}
+        />
       </View>
     </DrawerContentScrollView>
   );

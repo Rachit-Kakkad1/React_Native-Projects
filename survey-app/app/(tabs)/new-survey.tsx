@@ -1,0 +1,352 @@
+import React, { useState } from 'react';
+import { 
+  StyleSheet, 
+  Text, 
+  View, 
+  ScrollView, 
+  TextInput, 
+  Pressable, 
+  Alert,
+  Image 
+} from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useNavigation } from 'expo-router';
+import { DrawerActions } from '@react-navigation/native';
+import { Ionicons } from '@expo/vector-icons';
+
+export default function CreateSurveyScreen() {
+  const navigation = useNavigation();
+
+  // Form states
+  const [siteName, setSiteName] = useState('');
+  const [clientName, setClientName] = useState('');
+  const [description, setDescription] = useState('');
+  const [priority, setPriority] = useState<'High' | 'Medium' | 'Low'>('Medium');
+  const [date, setDate] = useState(new Date().toISOString().split('T')[0]); // Prefill with today's date (YYYY-MM-DD)
+
+  // Handler to open the sidebar drawer
+  const handleOpenDrawer = () => {
+    navigation.dispatch(DrawerActions.openDrawer());
+  };
+
+  // Form submission and validation
+  const handleSubmit = () => {
+    // Validate required fields
+    if (!siteName.trim()) {
+      Alert.alert("Validation Error", "Site Name is required.");
+      return;
+    }
+    if (!clientName.trim()) {
+      Alert.alert("Validation Error", "Client Name is required.");
+      return;
+    }
+    if (!description.trim()) {
+      Alert.alert("Validation Error", "Description is required.");
+      return;
+    }
+
+    // Success confirmation
+    Alert.alert(
+      "Survey Created Successfully",
+      `Site: ${siteName}\nClient: ${clientName}\nPriority: ${priority}\nDate: ${date}`,
+      [
+        {
+          text: "OK",
+          onPress: () => {
+            // Reset form
+            setSiteName('');
+            setClientName('');
+            setDescription('');
+            setPriority('Medium');
+            setDate(new Date().toISOString().split('T')[0]);
+          }
+        }
+      ]
+    );
+  };
+
+  return (
+    <SafeAreaView style={styles.container} edges={['top']}>
+      {/* 1. Custom App Header */}
+      <View style={styles.header}>
+        <Pressable onPress={handleOpenDrawer} style={styles.headerButton}>
+          <Ionicons name="menu-outline" size={24} color="#0F172A" />
+        </Pressable>
+        <Text style={styles.headerTitle}>Create Survey</Text>
+        <View style={styles.headerAvatar}>
+          <Image 
+            source={{ uri: 'https://res.cloudinary.com/dr84lv5ym/image/upload/v1784353123/ChatGPT_Image_Jul_18_2026_11_06_25_AM_skqy5i.png' }} 
+            style={styles.headerAvatarImage} 
+          />
+        </View>
+      </View>
+
+      <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
+        <View style={styles.formCard}>
+          <Text style={styles.formTitle}>📋 New Inspection Form</Text>
+          <Text style={styles.formSubtitle}>Enter site information and details below to log a new survey.</Text>
+
+          {/* Site Name Field */}
+          <View style={styles.inputContainer}>
+            <Text style={styles.inputLabel}>Site Name <Text style={styles.requiredStar}>*</Text></Text>
+            <View style={styles.inputWrapper}>
+              <Ionicons name="business-outline" size={18} color="#64748B" style={styles.inputIcon} />
+              <TextInput
+                style={styles.textInput}
+                placeholder="e.g. Metro Hub Construction"
+                placeholderTextColor="#94A3B8"
+                value={siteName}
+                onChangeText={setSiteName}
+              />
+            </View>
+          </View>
+
+          {/* Client Name Field */}
+          <View style={styles.inputContainer}>
+            <Text style={styles.inputLabel}>Client Name <Text style={styles.requiredStar}>*</Text></Text>
+            <View style={styles.inputWrapper}>
+              <Ionicons name="person-outline" size={18} color="#64748B" style={styles.inputIcon} />
+              <TextInput
+                style={styles.textInput}
+                placeholder="e.g. Apex Infra Group"
+                placeholderTextColor="#94A3B8"
+                value={clientName}
+                onChangeText={setClientName}
+              />
+            </View>
+          </View>
+
+          {/* Date Field */}
+          <View style={styles.inputContainer}>
+            <Text style={styles.inputLabel}>Survey Date <Text style={styles.requiredStar}>*</Text></Text>
+            <View style={styles.inputWrapper}>
+              <Ionicons name="calendar-outline" size={18} color="#64748B" style={styles.inputIcon} />
+              <TextInput
+                style={styles.textInput}
+                placeholder="YYYY-MM-DD"
+                placeholderTextColor="#94A3B8"
+                value={date}
+                onChangeText={setDate}
+              />
+            </View>
+          </View>
+
+          {/* Priority Field */}
+          <View style={styles.inputContainer}>
+            <Text style={styles.inputLabel}>Priority Level</Text>
+            <View style={styles.priorityRow}>
+              {/* High Option */}
+              <Pressable 
+                style={[
+                  styles.priorityButton, 
+                  priority === 'High' && { backgroundColor: '#FEF2F2', borderColor: '#EF4444' }
+                ]}
+                onPress={() => setPriority('High')}
+              >
+                <Text style={[styles.priorityText, priority === 'High' && { color: '#EF4444', fontWeight: '700' }]}>High</Text>
+              </Pressable>
+
+              {/* Medium Option */}
+              <Pressable 
+                style={[
+                  styles.priorityButton, 
+                  priority === 'Medium' && { backgroundColor: '#FFFBEB', borderColor: '#F59E0B' }
+                ]}
+                onPress={() => setPriority('Medium')}
+              >
+                <Text style={[styles.priorityText, priority === 'Medium' && { color: '#F59E0B', fontWeight: '700' }]}>Medium</Text>
+              </Pressable>
+
+              {/* Low Option */}
+              <Pressable 
+                style={[
+                  styles.priorityButton, 
+                  priority === 'Low' && { backgroundColor: '#ECFDF5', borderColor: '#10B981' }
+                ]}
+                onPress={() => setPriority('Low')}
+              >
+                <Text style={[styles.priorityText, priority === 'Low' && { color: '#10B981', fontWeight: '700' }]}>Low</Text>
+              </Pressable>
+            </View>
+          </View>
+
+          {/* Description Field */}
+          <View style={styles.inputContainer}>
+            <Text style={styles.inputLabel}>Survey Description <Text style={styles.requiredStar}>*</Text></Text>
+            <View style={[styles.inputWrapper, styles.multilineWrapper]}>
+              <TextInput
+                style={[styles.textInput, styles.multilineInput]}
+                placeholder="Describe site status, hazards, inspection checklist notes..."
+                placeholderTextColor="#94A3B8"
+                multiline
+                numberOfLines={4}
+                textAlignVertical="top"
+                value={description}
+                onChangeText={setDescription}
+              />
+            </View>
+          </View>
+
+          {/* Submit Button */}
+          <Pressable style={styles.submitBtn} onPress={handleSubmit}>
+            <Ionicons name="checkmark-circle-outline" size={20} color="#FFFFFF" />
+            <Text style={styles.submitBtnText}>Submit Survey</Text>
+          </Pressable>
+        </View>
+      </ScrollView>
+    </SafeAreaView>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#F8FAFC',
+  },
+  header: {
+    flexDirection: 'row',
+    height: 64,
+    backgroundColor: '#FFFFFF',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F1F5F9',
+  },
+  headerButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: '#F8FAFC',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+  },
+  headerTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#0F172A',
+    letterSpacing: 0.4,
+  },
+  headerAvatar: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    borderWidth: 1.5,
+    borderColor: '#3B82F6',
+    backgroundColor: '#F1F5F9',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  headerAvatarImage: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+  },
+  scrollContent: {
+    padding: 20,
+    paddingBottom: 40,
+  },
+  formCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 20,
+    padding: 20,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.02,
+    shadowRadius: 12,
+    elevation: 2,
+  },
+  formTitle: {
+    fontSize: 18,
+    fontWeight: '800',
+    color: '#0F172A',
+    marginBottom: 6,
+  },
+  formSubtitle: {
+    fontSize: 12,
+    color: '#64748B',
+    lineHeight: 18,
+    marginBottom: 20,
+  },
+  inputContainer: {
+    marginBottom: 18,
+  },
+  inputLabel: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: '#334155',
+    marginBottom: 8,
+  },
+  requiredStar: {
+    color: '#EF4444',
+  },
+  inputWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    borderRadius: 12,
+    backgroundColor: '#F8FAFC',
+    paddingHorizontal: 12,
+  },
+  inputIcon: {
+    marginRight: 8,
+  },
+  textInput: {
+    flex: 1,
+    height: 46,
+    color: '#0F172A',
+    fontSize: 14,
+    fontWeight: '500',
+  },
+  multilineWrapper: {
+    paddingVertical: 8,
+  },
+  multilineInput: {
+    height: 100,
+  },
+  priorityRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    gap: 10,
+  },
+  priorityButton: {
+    flex: 1,
+    height: 40,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    backgroundColor: '#F8FAFC',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  priorityText: {
+    fontSize: 13,
+    fontWeight: '500',
+    color: '#64748B',
+  },
+  submitBtn: {
+    backgroundColor: '#3B82F6',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: 48,
+    borderRadius: 24,
+    gap: 6,
+    marginTop: 8,
+    shadowColor: '#3B82F6',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 6,
+    elevation: 3,
+  },
+  submitBtnText: {
+    color: '#FFFFFF',
+    fontSize: 15,
+    fontWeight: '700',
+  },
+});
