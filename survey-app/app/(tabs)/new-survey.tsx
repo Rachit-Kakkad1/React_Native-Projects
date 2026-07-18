@@ -90,7 +90,7 @@ export default function CreateSurveyScreen() {
       {/* 1. Custom App Header */}
       <View style={styles.header}>
         <Pressable onPress={handleOpenDrawer} style={styles.headerButton}>
-          <Ionicons name="menu-outline" size={24} color="#0F172A" />
+          <Ionicons name="menu-outline" size={24} color="#FFFFFF" />
         </Pressable>
         <Text style={styles.headerTitle}>Create Survey</Text>
         <View style={styles.headerAvatar}>
@@ -258,32 +258,32 @@ export default function CreateSurveyScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F8FAFC',
+    backgroundColor: '#040712', // Obsidian Midnight
   },
   header: {
     flexDirection: 'row',
     height: 64,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#070A13', // Midnight Obsidian Header
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: '#F1F5F9',
+    borderBottomWidth: 1.5,
+    borderBottomColor: '#1E293B',
   },
   headerButton: {
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: '#F8FAFC',
+    backgroundColor: '#0B0F1C',
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: '#1E293B',
   },
   headerTitle: {
     fontSize: 18,
     fontWeight: '700',
-    color: '#0F172A',
+    color: '#FFFFFF',
     letterSpacing: 0.4,
   },
   headerAvatar: {
@@ -292,7 +292,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     borderWidth: 1.5,
     borderColor: '#3B82F6',
-    backgroundColor: '#F1F5F9',
+    backgroundColor: '#0B0F1C',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -306,26 +306,21 @@ const styles = StyleSheet.create({
     paddingBottom: 40,
   },
   formCard: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#0B0F1C', // Midnight Obsidian Card
     borderRadius: 20,
     padding: 20,
-    borderWidth: 1,
-    borderColor: '#E2E8F0',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.02,
-    shadowRadius: 12,
-    elevation: 2,
+    borderWidth: 1.5,
+    borderColor: '#1E293B',
   },
   formTitle: {
     fontSize: 18,
     fontWeight: '800',
-    color: '#0F172A',
+    color: '#FFFFFF',
     marginBottom: 6,
   },
   formSubtitle: {
     fontSize: 12,
-    color: '#64748B',
+    color: '#94A3B8',
     lineHeight: 18,
     marginBottom: 20,
   },
@@ -335,7 +330,7 @@ const styles = StyleSheet.create({
   inputLabel: {
     fontSize: 13,
     fontWeight: '700',
-    color: '#334155',
+    color: '#94A3B8', // Slate 400 Label
     marginBottom: 8,
   },
   requiredStar: {
@@ -345,9 +340,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     borderWidth: 1.5,
-    borderColor: '#E2E8F0',
+    borderColor: '#1E293B',
     borderRadius: 14,
-    backgroundColor: '#F8FAFC',
+    backgroundColor: '#070B16', // Dark Input background
     paddingHorizontal: 12,
   },
   inputIcon: {
@@ -356,7 +351,7 @@ const styles = StyleSheet.create({
   textInput: {
     flex: 1,
     height: 48,
-    color: '#0F172A',
+    color: '#FFFFFF', // White text input
     fontSize: 14,
     fontWeight: '500',
   },
@@ -375,15 +370,15 @@ const styles = StyleSheet.create({
     flex: 1,
     height: 40,
     borderRadius: 10,
-    borderWidth: 1,
-    borderColor: '#E2E8F0',
-    backgroundColor: '#F8FAFC',
+    borderWidth: 1.5,
+    borderColor: '#1E293B',
+    backgroundColor: '#070B16',
     justifyContent: 'center',
     alignItems: 'center',
   },
   priorityText: {
     fontSize: 13,
-    fontWeight: '500',
+    fontWeight: '600',
     color: '#64748B',
   },
   submitBtn: {
@@ -409,32 +404,29 @@ const styles = StyleSheet.create({
   modalOverlay: {
     flex: 1,
     justifyContent: 'flex-end',
-    backgroundColor: 'rgba(0, 0, 0, 0.4)',
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
   },
   modalContent: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#0B0F1C', // Dark modal content
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     paddingBottom: 40,
     paddingHorizontal: 20,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: -4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 10,
-    elevation: 10,
+    borderWidth: 1.5,
+    borderColor: '#1E293B',
   },
   modalHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingVertical: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#F1F5F9',
+    borderBottomWidth: 1.5,
+    borderBottomColor: '#1E293B',
   },
   modalTitle: {
     fontSize: 16,
     fontWeight: '700',
-    color: '#0F172A',
+    color: '#FFFFFF',
   },
   doneButtonText: {
     fontSize: 15,

@@ -39,7 +39,20 @@
           }
         }
       ],
-      "@react-native-community/datetimepicker"
+      "@react-native-community/datetimepicker",
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow survey-app to access your camera for capturing site photos."
+        }
+      ],
+      [
+        "expo-media-library",
+        {
+          "photosPermission": "Allow survey-app to save site inspection photos to your library.",
+          "savePhotosPermission": "Allow survey-app to save site inspection photos to your library."
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true,

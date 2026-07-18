@@ -23,6 +23,7 @@ function CustomDrawerContent(props: any) {
 
   const isDashboardActive = activeTabName === 'index';
   const isSurveyActive = activeTabName === 'new-survey';
+  const isCameraActive = activeTabName === 'camera';
 
   return (
     <DrawerContentScrollView {...props} contentContainerStyle={styles.drawerScrollView}>
@@ -50,14 +51,14 @@ function CustomDrawerContent(props: any) {
             <Ionicons 
               name={isDashboardActive ? "grid" : "grid-outline"} 
               size={22} 
-              color={isDashboardActive ? '#3B82F6' : '#64748B'} 
+              color={isDashboardActive ? '#3B82F6' : '#94A3B8'} 
             />
           )}
           focused={isDashboardActive}
           onPress={() => props.navigation.navigate('(tabs)', { screen: 'index' })}
           activeTintColor="#3B82F6"
-          inactiveTintColor="#64748B"
-          activeBackgroundColor="#EFF6FF"
+          inactiveTintColor="#94A3B8"
+          activeBackgroundColor="#1E293B"
           labelStyle={{ fontSize: 14, fontWeight: '600', marginLeft: -8 }}
           style={{ borderRadius: 12, marginVertical: 4, paddingHorizontal: 8, marginHorizontal: 12 }}
         />
@@ -69,14 +70,33 @@ function CustomDrawerContent(props: any) {
             <Ionicons 
               name={isSurveyActive ? "document-text" : "document-text-outline"} 
               size={22} 
-              color={isSurveyActive ? '#3B82F6' : '#64748B'} 
+              color={isSurveyActive ? '#3B82F6' : '#94A3B8'} 
             />
           )}
           focused={isSurveyActive}
           onPress={() => props.navigation.navigate('(tabs)', { screen: 'new-survey' })}
           activeTintColor="#3B82F6"
-          inactiveTintColor="#64748B"
-          activeBackgroundColor="#EFF6FF"
+          inactiveTintColor="#94A3B8"
+          activeBackgroundColor="#1E293B"
+          labelStyle={{ fontSize: 14, fontWeight: '600', marginLeft: -8 }}
+          style={{ borderRadius: 12, marginVertical: 4, paddingHorizontal: 8, marginHorizontal: 12 }}
+        />
+
+        {/* Camera Link */}
+        <DrawerItem
+          label="Camera"
+          icon={({ size }) => (
+            <Ionicons 
+              name={isCameraActive ? "camera" : "camera-outline"} 
+              size={22} 
+              color={isCameraActive ? '#3B82F6' : '#94A3B8'} 
+            />
+          )}
+          focused={isCameraActive}
+          onPress={() => props.navigation.navigate('(tabs)', { screen: 'camera' })}
+          activeTintColor="#3B82F6"
+          inactiveTintColor="#94A3B8"
+          activeBackgroundColor="#1E293B"
           labelStyle={{ fontSize: 14, fontWeight: '600', marginLeft: -8 }}
           style={{ borderRadius: 12, marginVertical: 4, paddingHorizontal: 8, marginHorizontal: 12 }}
         />
@@ -95,37 +115,14 @@ export default function RootLayout() {
           drawerContent={(props) => <CustomDrawerContent {...props} />}
           screenOptions={{
             headerShown: false,
-            drawerActiveTintColor: '#3B82F6', // Modern Apple/Google Active Blue
-            drawerInactiveTintColor: '#64748B', // Slate 500
-            drawerActiveBackgroundColor: '#EFF6FF', // Soft Blue opacity background (Slate 50 style)
             drawerStyle: {
               width: 290,
-              backgroundColor: '#FFFFFF',
-            },
-            drawerLabelStyle: {
-              fontSize: 14,
-              fontWeight: '600',
-              marginLeft: -8, // Tighten spacing between icon and text label
-            },
-            drawerItemStyle: {
-              borderRadius: 12,
-              marginVertical: 4,
-              paddingHorizontal: 8,
-              marginHorizontal: 12,
+              backgroundColor: '#070A13', // Obsidian Dark
             },
           }}
         >
-          {/* We only register (tabs) as the entry screen. Clicking Dashboard in the Drawer will focus (tabs) */}
-          <Drawer.Screen
-            name="(tabs)"
-            options={{
-              drawerLabel: 'Dashboard',
-              title: 'Dashboard',
-              drawerIcon: ({ color, size }) => (
-                <Ionicons name="grid-outline" size={size} color={color} />
-              ),
-            }}
-          />
+          {/* Main bottom tabs group containing Dashboard, Survey, and Camera */}
+          <Drawer.Screen name="(tabs)" />
         </Drawer>
         <StatusBar style="auto" />
       </ThemeProvider>
@@ -136,18 +133,18 @@ export default function RootLayout() {
 const styles = StyleSheet.create({
   drawerScrollView: {
     paddingTop: 0,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#070A13', // Midnight Obsidian
     flex: 1,
   },
   drawerHeader: {
-    backgroundColor: '#FFFFFF', // Pure minimalist white background
+    backgroundColor: '#070A13', // Midnight Obsidian Header
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 20,
     paddingTop: 64,
     paddingBottom: 24,
-    borderBottomWidth: 1,
-    borderBottomColor: '#F1F5F9', // Subtle bottom border line
+    borderBottomWidth: 1.5,
+    borderBottomColor: '#1E293B', // Dark border line
     marginBottom: 16,
   },
   avatarContainer: {
@@ -155,13 +152,13 @@ const styles = StyleSheet.create({
     height: 58,
     borderRadius: 29,
     borderWidth: 1.5,
-    borderColor: '#E2E8F0', // Thin border ring
+    borderColor: '#1E293B',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F8FAFC',
+    backgroundColor: '#0B0F1C',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.04,
+    shadowOpacity: 0.2,
     shadowRadius: 4,
     elevation: 2,
   },
@@ -176,19 +173,19 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   studentName: {
-    color: '#0F172A', // Slate 900
+    color: '#FFFFFF', // High contrast white name
     fontSize: 16,
     fontWeight: '700',
     letterSpacing: 0.2,
   },
   studentInfo: {
-    color: '#64748B', // Slate 500
+    color: '#94A3B8', // Slate 400
     fontSize: 12,
     fontWeight: '500',
     marginTop: 3,
   },
   studentBatch: {
-    color: '#94A3B8', // Slate 400
+    color: '#64748B', // Slate 500
     fontSize: 11,
     fontWeight: '500',
     marginTop: 1,

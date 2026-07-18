@@ -7,14 +7,14 @@ export default function TabLayout() {
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: '#3B82F6', // Premium Blue Accent
+        tabBarActiveTintColor: '#3B82F6', // Electric Cobalt Blue
         tabBarInactiveTintColor: '#64748B', // Slate 500
         tabBarStyle: {
           height: 60,
           paddingBottom: 8,
-          backgroundColor: '#FFFFFF',
-          borderTopColor: '#F1F5F9',
-          borderTopWidth: 1,
+          backgroundColor: '#0B0F1C', // Midnight Obsidian Tab Bar
+          borderTopColor: '#1E293B', // Dark border line
+          borderTopWidth: 1.5,
         },
         tabBarLabelStyle: {
           fontSize: 11,
@@ -37,6 +37,15 @@ export default function TabLayout() {
           title: 'New Survey',
           tabBarIcon: ({ color, focused }) => (
             <Ionicons name={focused ? "add-circle" : "add-circle-outline"} size={22} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="camera"
+        options={{
+          title: 'Camera',
+          tabBarIcon: ({ color, focused }) => (
+            <Ionicons name={focused ? "camera" : "camera-outline"} size={22} color={color} />
           ),
         }}
       />

@@ -70,17 +70,17 @@ export default function DashboardScreen() {
     navigation.dispatch(DrawerActions.openDrawer());
   };
 
-  // Helper to get priority badge color
+  // Helper to get priority badge color (Translucent neon badges for dark mode)
   const getPriorityColor = (priority: 'High' | 'Medium' | 'Low') => {
     switch (priority) {
       case 'High':
-        return { bg: '#FEF2F2', text: '#EF4444', border: '#EF4444' }; // Soft red background with vibrant red text/border
+        return { bg: 'rgba(239, 68, 68, 0.15)', text: '#EF4444', border: '#EF4444' };
       case 'Medium':
-        return { bg: '#FFFBEB', text: '#F59E0B', border: '#F59E0B' }; // Soft amber background with vibrant amber text/border
+        return { bg: 'rgba(245, 158, 11, 0.15)', text: '#F59E0B', border: '#F59E0B' };
       case 'Low':
-        return { bg: '#ECFDF5', text: '#10B981', border: '#10B981' }; // Soft emerald background with vibrant emerald text/border
+        return { bg: 'rgba(16, 185, 129, 0.15)', text: '#10B981', border: '#10B981' };
       default:
-        return { bg: '#F1F5F9', text: '#64748B', border: '#E2E8F0' };
+        return { bg: '#1E293B', text: '#94A3B8', border: '#334155' };
     }
   };
 
@@ -89,7 +89,7 @@ export default function DashboardScreen() {
       {/* 1. Custom Sticky App Header */}
       <View style={styles.header}>
         <Pressable onPress={handleOpenDrawer} style={styles.headerButton}>
-          <Ionicons name="menu-outline" size={24} color="#0F172A" />
+          <Ionicons name="menu-outline" size={24} color="#FFFFFF" />
         </Pressable>
         <Text style={styles.headerTitle}>Smart Field Survey</Text>
         <View style={styles.headerAvatar}>
@@ -153,6 +153,32 @@ export default function DashboardScreen() {
           </Pressable>
         </View>
 
+        {/* 4.5. Quick Action Cards */}
+        <Text style={styles.mainSectionHeader}>Quick Actions</Text>
+        <View style={styles.quickActionsRow}>
+          <Pressable 
+            style={styles.actionCard} 
+            onPress={() => navigation.navigate('new-survey' as never)}
+          >
+            <View style={[styles.actionIconBg, { backgroundColor: '#EFF6FF' }]}>
+              <Ionicons name="document-text-outline" size={22} color="#3B82F6" />
+            </View>
+            <Text style={styles.actionCardTitle}>New Survey</Text>
+            <Text style={styles.actionCardDesc}>Start a new inspection log</Text>
+          </Pressable>
+
+          <Pressable 
+            style={styles.actionCard} 
+            onPress={() => navigation.navigate('camera' as never)}
+          >
+            <View style={[styles.actionIconBg, { backgroundColor: '#F0FDF4' }]}>
+              <Ionicons name="camera-outline" size={22} color="#22C55E" />
+            </View>
+            <Text style={styles.actionCardTitle}>Camera</Text>
+            <Text style={styles.actionCardDesc}>Capture and save site assets</Text>
+          </Pressable>
+        </View>
+
         {/* 5. Recent Survey Summary (Individual Cards with Color Indicators) */}
         <Text style={styles.mainSectionHeader}>Recent Survey Summary</Text>
         <View style={styles.recentList}>
@@ -213,32 +239,32 @@ export default function DashboardScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F8FAFC', // Premium Slate 50 (Warm white/grey)
+    backgroundColor: '#040712', // Obsidian Midnight
   },
   header: {
     flexDirection: 'row',
     height: 64,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#070A13', // Midnight Obsidian Header
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: '#F1F5F9',
+    borderBottomWidth: 1.5,
+    borderBottomColor: '#1E293B',
   },
   headerButton: {
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: '#F8FAFC',
+    backgroundColor: '#0B0F1C',
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: '#1E293B',
   },
   headerTitle: {
     fontSize: 18,
     fontWeight: '700',
-    color: '#0F172A', // Slate 900
+    color: '#FFFFFF',
     letterSpacing: 0.4,
   },
   headerAvatar: {
@@ -246,8 +272,8 @@ const styles = StyleSheet.create({
     height: 40,
     borderRadius: 20,
     borderWidth: 1.5,
-    borderColor: '#3B82F6', // Glowing blue ring
-    backgroundColor: '#F1F5F9',
+    borderColor: '#3B82F6',
+    backgroundColor: '#0B0F1C',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -261,15 +287,15 @@ const styles = StyleSheet.create({
     paddingBottom: 40,
   },
   welcomeCard: {
-    backgroundColor: '#0F172A', // Premium Deep Slate 900
+    backgroundColor: '#0B0F1C', // Midnight Obsidian Card
     borderRadius: 20,
     padding: 24,
     marginBottom: 20,
-    position: 'relative',
-    overflow: 'hidden',
-    shadowColor: '#0F172A',
+    borderWidth: 1,
+    borderColor: '#1E293B',
+    shadowColor: '#3B82F6',
     shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.12,
+    shadowOpacity: 0.04,
     shadowRadius: 16,
     elevation: 4,
   },
@@ -277,7 +303,7 @@ const styles = StyleSheet.create({
     zIndex: 2,
   },
   welcomeGreeting: {
-    color: '#3B82F6', // Vibrant Accent color
+    color: '#3B82F6',
     fontSize: 12,
     fontWeight: '800',
     textTransform: 'uppercase',
@@ -291,22 +317,22 @@ const styles = StyleSheet.create({
     letterSpacing: 0.3,
   },
   welcomeSub: {
-    color: '#94A3B8', // Slate 400
+    color: '#94A3B8',
     fontSize: 13,
     marginTop: 10,
     lineHeight: 20,
     fontWeight: '400',
   },
   studentCard: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#0B0F1C', // Midnight Obsidian Card
     borderRadius: 20,
     padding: 20,
     marginBottom: 20,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: '#1E293B',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.02,
+    shadowOpacity: 0.1,
     shadowRadius: 12,
     elevation: 2,
   },
@@ -319,7 +345,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 15,
     fontWeight: '700',
-    color: '#0F172A',
+    color: '#FFFFFF',
   },
   studentInfoGrid: {
     gap: 12,
@@ -329,20 +355,20 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingBottom: 8,
     borderBottomWidth: 1,
-    borderBottomColor: '#F1F5F9',
+    borderBottomColor: '#172033',
   },
   studentLabel: {
     fontSize: 13,
-    color: '#64748B', // Slate 500
+    color: '#94A3B8', // Slate 400 label
     fontWeight: '500',
   },
   studentValue: {
     fontSize: 13,
     fontWeight: '600',
-    color: '#0F172A', // Slate 900
+    color: '#FFFFFF', // High contrast white details
   },
   countCard: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#0B0F1C', // Midnight Obsidian Card
     borderRadius: 20,
     padding: 20,
     marginBottom: 24,
@@ -350,19 +376,14 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#E2E8F0',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.02,
-    shadowRadius: 12,
-    elevation: 2,
+    borderColor: '#1E293B',
   },
   countLeft: {
     flexDirection: 'column',
   },
   countLabel: {
     fontSize: 11,
-    color: '#64748B',
+    color: '#94A3B8',
     fontWeight: '700',
     textTransform: 'uppercase',
     letterSpacing: 1.0,
@@ -376,7 +397,7 @@ const styles = StyleSheet.create({
   countNumber: {
     fontSize: 38,
     fontWeight: '800',
-    color: '#0F172A',
+    color: '#FFFFFF',
   },
   countSubtext: {
     fontSize: 13,
@@ -384,7 +405,7 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   countIncrementBtn: {
-    backgroundColor: '#3B82F6', // Royal Blue
+    backgroundColor: '#3B82F6',
     flexDirection: 'row',
     alignItems: 'center',
     paddingVertical: 10,
@@ -405,7 +426,7 @@ const styles = StyleSheet.create({
   mainSectionHeader: {
     fontSize: 16,
     fontWeight: '800',
-    color: '#0F172A',
+    color: '#FFFFFF',
     marginBottom: 16,
     letterSpacing: 0.3,
   },
@@ -413,16 +434,11 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   surveyCard: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#0B0F1C', // Midnight Obsidian Card
     borderRadius: 20,
-    borderLeftWidth: 4, // Left accent line based on priority!
+    borderLeftWidth: 4,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.02,
-    shadowRadius: 12,
-    elevation: 2,
+    borderColor: '#1E293B',
     overflow: 'hidden',
   },
   surveyMain: {
@@ -437,7 +453,7 @@ const styles = StyleSheet.create({
   siteNameText: {
     fontSize: 14,
     fontWeight: '700',
-    color: '#0F172A',
+    color: '#FFFFFF',
     flex: 1,
     marginRight: 10,
   },
@@ -454,7 +470,7 @@ const styles = StyleSheet.create({
   },
   clientNameText: {
     fontSize: 13,
-    color: '#475569',
+    color: '#94A3B8',
     fontWeight: '500',
   },
   surveyDetailsContainer: {
@@ -481,19 +497,19 @@ const styles = StyleSheet.create({
   },
   progressLabel: {
     fontSize: 10,
-    color: '#94A3B8',
+    color: '#64748B',
     fontWeight: '700',
     textTransform: 'uppercase',
     letterSpacing: 0.5,
   },
   progressValueText: {
     fontSize: 11,
-    color: '#0F172A',
+    color: '#FFFFFF',
     fontWeight: '700',
   },
   progressBarBg: {
     height: 6,
-    backgroundColor: '#F1F5F9',
+    backgroundColor: '#172033',
     borderRadius: 3,
     overflow: 'hidden',
   },
@@ -503,7 +519,7 @@ const styles = StyleSheet.create({
   },
   cardDivider: {
     height: 1,
-    backgroundColor: '#F1F5F9',
+    backgroundColor: '#172033',
     marginVertical: 12,
   },
   surveyFooter: {
@@ -523,12 +539,46 @@ const styles = StyleSheet.create({
   },
   surveyIdText: {
     fontSize: 11,
-    color: '#94A3B8',
+    color: '#64748B',
     fontWeight: '600',
   },
   surveyDateText: {
     fontSize: 11,
-    color: '#64748B',
+    color: '#94A3B8',
     fontWeight: '600',
+  },
+  quickActionsRow: {
+    flexDirection: 'row',
+    gap: 12,
+    marginBottom: 24,
+  },
+  actionCard: {
+    flex: 1,
+    backgroundColor: '#0B0F1C', // Midnight Obsidian Card
+    borderRadius: 18,
+    padding: 16,
+    borderWidth: 1.5,
+    borderColor: '#1E293B',
+  },
+  actionIconBg: {
+    width: 44,
+    height: 44,
+    borderRadius: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 12,
+    borderWidth: 1,
+    borderColor: '#172033',
+  },
+  actionCardTitle: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: '#FFFFFF',
+    marginBottom: 4,
+  },
+  actionCardDesc: {
+    fontSize: 11,
+    color: '#64748B',
+    lineHeight: 15,
   },
 });
