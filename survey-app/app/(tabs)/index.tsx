@@ -70,17 +70,17 @@ export default function DashboardScreen() {
     navigation.dispatch(DrawerActions.openDrawer());
   };
 
-  // Helper to get priority badge color (Translucent neon badges for dark mode)
+  // Helper to get priority badge color
   const getPriorityColor = (priority: 'High' | 'Medium' | 'Low') => {
     switch (priority) {
       case 'High':
-        return { bg: 'rgba(239, 68, 68, 0.15)', text: '#EF4444', border: '#EF4444' };
+        return { bg: '#FEF2F2', text: '#EF4444', border: '#EF4444' };
       case 'Medium':
-        return { bg: 'rgba(245, 158, 11, 0.15)', text: '#F59E0B', border: '#F59E0B' };
+        return { bg: '#FFFBEB', text: '#D97706', border: '#F59E0B' };
       case 'Low':
-        return { bg: 'rgba(16, 185, 129, 0.15)', text: '#10B981', border: '#10B981' };
+        return { bg: '#ECFDF5', text: '#059669', border: '#10B981' };
       default:
-        return { bg: '#1E293B', text: '#94A3B8', border: '#334155' };
+        return { bg: '#F1F5F9', text: '#64748B', border: '#E2E8F0' };
     }
   };
 
@@ -89,7 +89,7 @@ export default function DashboardScreen() {
       {/* 1. Custom Sticky App Header */}
       <View style={styles.header}>
         <Pressable onPress={handleOpenDrawer} style={styles.headerButton}>
-          <Ionicons name="menu-outline" size={24} color="#FFFFFF" />
+          <Ionicons name="menu-outline" size={24} color="#8E7E6A" />
         </Pressable>
         <Text style={styles.headerTitle}>Smart Field Survey</Text>
         <View style={styles.headerAvatar}>
@@ -239,32 +239,32 @@ export default function DashboardScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#040712', // Obsidian Midnight
+    backgroundColor: '#FAF8F5', // Warm Beige Alabaster Background
   },
   header: {
     flexDirection: 'row',
     height: 64,
-    backgroundColor: '#070A13', // Midnight Obsidian Header
+    backgroundColor: '#FFFFFF', // Crisp White Header
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 20,
     borderBottomWidth: 1.5,
-    borderBottomColor: '#1E293B',
+    borderBottomColor: '#EFECE6',
   },
   headerButton: {
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: '#0B0F1C',
+    backgroundColor: '#FAF8F5',
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#1E293B',
+    borderColor: '#EFECE6',
   },
   headerTitle: {
     fontSize: 18,
     fontWeight: '700',
-    color: '#FFFFFF',
+    color: '#2C261F', // Charcoal Coffee
     letterSpacing: 0.4,
   },
   headerAvatar: {
@@ -272,8 +272,8 @@ const styles = StyleSheet.create({
     height: 40,
     borderRadius: 20,
     borderWidth: 1.5,
-    borderColor: '#3B82F6',
-    backgroundColor: '#0B0F1C',
+    borderColor: '#8E7E6A', // Warm gold ring
+    backgroundColor: '#FAF8F5',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -287,23 +287,23 @@ const styles = StyleSheet.create({
     paddingBottom: 40,
   },
   welcomeCard: {
-    backgroundColor: '#0B0F1C', // Midnight Obsidian Card
+    backgroundColor: '#8E7E6A', // Desert Khaki Gold Card
     borderRadius: 20,
     padding: 24,
     marginBottom: 20,
     borderWidth: 1,
-    borderColor: '#1E293B',
-    shadowColor: '#3B82F6',
+    borderColor: '#EFECE6',
+    shadowColor: '#8E7E6A',
     shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.04,
-    shadowRadius: 16,
-    elevation: 4,
+    shadowOpacity: 0.15,
+    shadowRadius: 12,
+    elevation: 3,
   },
   welcomeTextContainer: {
     zIndex: 2,
   },
   welcomeGreeting: {
-    color: '#3B82F6',
+    color: '#FAF8F5', // Soft white/beige welcome
     fontSize: 12,
     fontWeight: '800',
     textTransform: 'uppercase',
@@ -317,23 +317,23 @@ const styles = StyleSheet.create({
     letterSpacing: 0.3,
   },
   welcomeSub: {
-    color: '#94A3B8',
+    color: '#F4F0E8', // Alabaster subtitle
     fontSize: 13,
     marginTop: 10,
     lineHeight: 20,
     fontWeight: '400',
   },
   studentCard: {
-    backgroundColor: '#0B0F1C', // Midnight Obsidian Card
+    backgroundColor: '#FFFFFF', // Crisp White Card
     borderRadius: 20,
     padding: 20,
     marginBottom: 20,
-    borderWidth: 1,
-    borderColor: '#1E293B',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.1,
-    shadowRadius: 12,
+    borderWidth: 1.5,
+    borderColor: '#EFECE6',
+    shadowColor: '#7C7267',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.02,
+    shadowRadius: 8,
     elevation: 2,
   },
   studentHeader: {
@@ -345,7 +345,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 15,
     fontWeight: '700',
-    color: '#FFFFFF',
+    color: '#2C261F',
   },
   studentInfoGrid: {
     gap: 12,
@@ -355,35 +355,35 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingBottom: 8,
     borderBottomWidth: 1,
-    borderBottomColor: '#172033',
+    borderBottomColor: '#FAF8F5',
   },
   studentLabel: {
     fontSize: 13,
-    color: '#94A3B8', // Slate 400 label
+    color: '#7C7267', // Warm Taupe label
     fontWeight: '500',
   },
   studentValue: {
     fontSize: 13,
     fontWeight: '600',
-    color: '#FFFFFF', // High contrast white details
+    color: '#2C261F', // Charcoal Coffee
   },
   countCard: {
-    backgroundColor: '#0B0F1C', // Midnight Obsidian Card
+    backgroundColor: '#FFFFFF', // Crisp White Card
     borderRadius: 20,
     padding: 20,
     marginBottom: 24,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#1E293B',
+    borderWidth: 1.5,
+    borderColor: '#EFECE6',
   },
   countLeft: {
     flexDirection: 'column',
   },
   countLabel: {
     fontSize: 11,
-    color: '#94A3B8',
+    color: '#7C7267',
     fontWeight: '700',
     textTransform: 'uppercase',
     letterSpacing: 1.0,
@@ -397,24 +397,24 @@ const styles = StyleSheet.create({
   countNumber: {
     fontSize: 38,
     fontWeight: '800',
-    color: '#FFFFFF',
+    color: '#2C261F',
   },
   countSubtext: {
     fontSize: 13,
-    color: '#64748B',
+    color: '#7C7267',
     fontWeight: '500',
   },
   countIncrementBtn: {
-    backgroundColor: '#3B82F6',
+    backgroundColor: '#8E7E6A', // Desert Gold
     flexDirection: 'row',
     alignItems: 'center',
     paddingVertical: 10,
     paddingHorizontal: 16,
     borderRadius: 30,
     gap: 4,
-    shadowColor: '#3B82F6',
+    shadowColor: '#8E7E6A',
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.22,
+    shadowOpacity: 0.18,
     shadowRadius: 8,
     elevation: 4,
   },
@@ -426,7 +426,7 @@ const styles = StyleSheet.create({
   mainSectionHeader: {
     fontSize: 16,
     fontWeight: '800',
-    color: '#FFFFFF',
+    color: '#2C261F',
     marginBottom: 16,
     letterSpacing: 0.3,
   },
@@ -434,12 +434,17 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   surveyCard: {
-    backgroundColor: '#0B0F1C', // Midnight Obsidian Card
+    backgroundColor: '#FFFFFF', // Crisp White Card
     borderRadius: 20,
     borderLeftWidth: 4,
-    borderWidth: 1,
-    borderColor: '#1E293B',
+    borderWidth: 1.5,
+    borderColor: '#EFECE6',
     overflow: 'hidden',
+    shadowColor: '#7C7267',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.02,
+    shadowRadius: 8,
+    elevation: 2,
   },
   surveyMain: {
     padding: 18,
@@ -453,7 +458,7 @@ const styles = StyleSheet.create({
   siteNameText: {
     fontSize: 14,
     fontWeight: '700',
-    color: '#FFFFFF',
+    color: '#2C261F',
     flex: 1,
     marginRight: 10,
   },
@@ -470,7 +475,7 @@ const styles = StyleSheet.create({
   },
   clientNameText: {
     fontSize: 13,
-    color: '#94A3B8',
+    color: '#7C7267',
     fontWeight: '500',
   },
   surveyDetailsContainer: {
@@ -482,7 +487,7 @@ const styles = StyleSheet.create({
   },
   locationText: {
     fontSize: 12,
-    color: '#64748B',
+    color: '#7C7267',
     fontWeight: '500',
   },
   progressSection: {
@@ -497,19 +502,19 @@ const styles = StyleSheet.create({
   },
   progressLabel: {
     fontSize: 10,
-    color: '#64748B',
+    color: '#B6AEA2',
     fontWeight: '700',
     textTransform: 'uppercase',
     letterSpacing: 0.5,
   },
   progressValueText: {
     fontSize: 11,
-    color: '#FFFFFF',
+    color: '#2C261F',
     fontWeight: '700',
   },
   progressBarBg: {
     height: 6,
-    backgroundColor: '#172033',
+    backgroundColor: '#FAF8F5',
     borderRadius: 3,
     overflow: 'hidden',
   },
@@ -519,7 +524,7 @@ const styles = StyleSheet.create({
   },
   cardDivider: {
     height: 1,
-    backgroundColor: '#172033',
+    backgroundColor: '#FAF8F5',
     marginVertical: 12,
   },
   surveyFooter: {
@@ -539,12 +544,12 @@ const styles = StyleSheet.create({
   },
   surveyIdText: {
     fontSize: 11,
-    color: '#64748B',
+    color: '#B6AEA2',
     fontWeight: '600',
   },
   surveyDateText: {
     fontSize: 11,
-    color: '#94A3B8',
+    color: '#7C7267',
     fontWeight: '600',
   },
   quickActionsRow: {
@@ -554,11 +559,16 @@ const styles = StyleSheet.create({
   },
   actionCard: {
     flex: 1,
-    backgroundColor: '#0B0F1C', // Midnight Obsidian Card
+    backgroundColor: '#FFFFFF', // Crisp White Card
     borderRadius: 18,
     padding: 16,
     borderWidth: 1.5,
-    borderColor: '#1E293B',
+    borderColor: '#EFECE6',
+    shadowColor: '#7C7267',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.02,
+    shadowRadius: 8,
+    elevation: 2,
   },
   actionIconBg: {
     width: 44,
@@ -568,17 +578,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 12,
     borderWidth: 1,
-    borderColor: '#172033',
+    borderColor: '#FAF8F5',
   },
   actionCardTitle: {
     fontSize: 14,
     fontWeight: '700',
-    color: '#FFFFFF',
+    color: '#2C261F',
     marginBottom: 4,
   },
   actionCardDesc: {
     fontSize: 11,
-    color: '#64748B',
+    color: '#7C7267',
     lineHeight: 15,
   },
 });

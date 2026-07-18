@@ -90,7 +90,7 @@ export default function CreateSurveyScreen() {
       {/* 1. Custom App Header */}
       <View style={styles.header}>
         <Pressable onPress={handleOpenDrawer} style={styles.headerButton}>
-          <Ionicons name="menu-outline" size={24} color="#FFFFFF" />
+          <Ionicons name="menu-outline" size={24} color="#8E7E6A" />
         </Pressable>
         <Text style={styles.headerTitle}>Create Survey</Text>
         <View style={styles.headerAvatar}>
@@ -258,32 +258,32 @@ export default function CreateSurveyScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#040712', // Obsidian Midnight
+    backgroundColor: '#FAF8F5', // Warm Beige Alabaster
   },
   header: {
     flexDirection: 'row',
     height: 64,
-    backgroundColor: '#070A13', // Midnight Obsidian Header
+    backgroundColor: '#FFFFFF', // Crisp White Header
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 20,
     borderBottomWidth: 1.5,
-    borderBottomColor: '#1E293B',
+    borderBottomColor: '#EFECE6',
   },
   headerButton: {
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: '#0B0F1C',
+    backgroundColor: '#FAF8F5',
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#1E293B',
+    borderColor: '#EFECE6',
   },
   headerTitle: {
     fontSize: 18,
     fontWeight: '700',
-    color: '#FFFFFF',
+    color: '#2C261F', // Charcoal Coffee
     letterSpacing: 0.4,
   },
   headerAvatar: {
@@ -291,8 +291,8 @@ const styles = StyleSheet.create({
     height: 40,
     borderRadius: 20,
     borderWidth: 1.5,
-    borderColor: '#3B82F6',
-    backgroundColor: '#0B0F1C',
+    borderColor: '#8E7E6A', // Warm gold ring
+    backgroundColor: '#FAF8F5',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -306,21 +306,21 @@ const styles = StyleSheet.create({
     paddingBottom: 40,
   },
   formCard: {
-    backgroundColor: '#0B0F1C', // Midnight Obsidian Card
+    backgroundColor: '#FFFFFF', // Crisp White Card
     borderRadius: 20,
     padding: 20,
     borderWidth: 1.5,
-    borderColor: '#1E293B',
+    borderColor: '#EFECE6',
   },
   formTitle: {
     fontSize: 18,
     fontWeight: '800',
-    color: '#FFFFFF',
+    color: '#2C261F',
     marginBottom: 6,
   },
   formSubtitle: {
     fontSize: 12,
-    color: '#94A3B8',
+    color: '#7C7267', // Warm Taupe description
     lineHeight: 18,
     marginBottom: 20,
   },
@@ -330,7 +330,7 @@ const styles = StyleSheet.create({
   inputLabel: {
     fontSize: 13,
     fontWeight: '700',
-    color: '#94A3B8', // Slate 400 Label
+    color: '#7C7267', // Warm Taupe label
     marginBottom: 8,
   },
   requiredStar: {
@@ -340,9 +340,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     borderWidth: 1.5,
-    borderColor: '#1E293B',
+    borderColor: '#EFECE6',
     borderRadius: 14,
-    backgroundColor: '#070B16', // Dark Input background
+    backgroundColor: '#FAF8F5', // Light Input background
     paddingHorizontal: 12,
   },
   inputIcon: {
@@ -351,7 +351,7 @@ const styles = StyleSheet.create({
   textInput: {
     flex: 1,
     height: 48,
-    color: '#FFFFFF', // White text input
+    color: '#2C261F', // Dark text input
     fontSize: 14,
     fontWeight: '500',
   },
@@ -371,18 +371,18 @@ const styles = StyleSheet.create({
     height: 40,
     borderRadius: 10,
     borderWidth: 1.5,
-    borderColor: '#1E293B',
-    backgroundColor: '#070B16',
+    borderColor: '#EFECE6',
+    backgroundColor: '#FAF8F5',
     justifyContent: 'center',
     alignItems: 'center',
   },
   priorityText: {
     fontSize: 13,
     fontWeight: '600',
-    color: '#64748B',
+    color: '#7C7267',
   },
   submitBtn: {
-    backgroundColor: '#3B82F6',
+    backgroundColor: '#8E7E6A', // Desert Khaki Gold
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
@@ -390,9 +390,9 @@ const styles = StyleSheet.create({
     borderRadius: 24,
     gap: 6,
     marginTop: 8,
-    shadowColor: '#3B82F6',
+    shadowColor: '#8E7E6A',
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.2,
+    shadowOpacity: 0.15,
     shadowRadius: 6,
     elevation: 3,
   },
@@ -404,16 +404,16 @@ const styles = StyleSheet.create({
   modalOverlay: {
     flex: 1,
     justifyContent: 'flex-end',
-    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+    backgroundColor: 'rgba(44, 38, 31, 0.4)', // Warm overlay
   },
   modalContent: {
-    backgroundColor: '#0B0F1C', // Dark modal content
+    backgroundColor: '#FFFFFF', // Crisp White Modal
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     paddingBottom: 40,
     paddingHorizontal: 20,
     borderWidth: 1.5,
-    borderColor: '#1E293B',
+    borderColor: '#EFECE6',
   },
   modalHeader: {
     flexDirection: 'row',
@@ -421,16 +421,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 16,
     borderBottomWidth: 1.5,
-    borderBottomColor: '#1E293B',
+    borderBottomColor: '#EFECE6',
   },
   modalTitle: {
     fontSize: 16,
     fontWeight: '700',
-    color: '#FFFFFF',
+    color: '#2C261F',
   },
   doneButtonText: {
     fontSize: 15,
     fontWeight: '700',
-    color: '#3B82F6',
+    color: '#8E7E6A',
   },
 });

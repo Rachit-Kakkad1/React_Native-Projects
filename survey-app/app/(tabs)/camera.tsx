@@ -8,15 +8,15 @@ import {
   Image, 
   ActivityIndicator, 
   Platform,
-  Modal,
   ScrollView
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from 'expo-router';
 import { DrawerActions } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
-import { CameraView, useCameraPermissions } from 'expo-camera';
+import { CameraView, useCameraPermissions, FlashMode } from 'expo-camera';
 import * as MediaLibrary from 'expo-media-library';
+import { Accelerometer } from 'expo-sensors';
 
 interface CapturedPhoto {
   uri: string;
@@ -37,6 +37,15 @@ export default function CameraScreen() {
   const [isCameraReady, setIsCameraReady] = useState(false);
   const [isCapturing, setIsCapturing] = useState(false);
 
+  // Advanced camera controllers
+  const [flash, setFlash] = useState<FlashMode>('off');
+  const [zoom, setZoom] = useState(0);
+  const [showGrid, setShowGrid] = useState(false);
+
+  // Accelerometer tilt state
+  const [accelData, setAccelData] = useState({ x: 0, y: 0, z: 0 });
+  const [sensorSubscription, setSensorSubscription] = useState<any>(null);
+
   // Capture states
   const [capturedPhotoUri, setCapturedPhotoUri] = useState<string | null>(null);
   const [captureTime, setCaptureTime] = useState<string | null>(null);
@@ -44,28 +53,76 @@ export default function CameraScreen() {
   // Session Capture History
   const [capturedPhotosList, setCapturedPhotosList] = useState<CapturedPhoto[]>([]);
 
-  // Focus effect: Clear active preview when navigating back to Camera tab
+  // Focus effect: Reset capture preview and subscribe to sensors on screen focus
   useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', () => {
+    const unsubscribeFocus = navigation.addListener('focus', () => {
       setCapturedPhotoUri(null);
       setCaptureTime(null);
       setIsCameraReady(false);
+      subscribeSensors();
     });
-    return unsubscribe;
-  }, [navigation]);
 
-  // Handler to open the sidebar drawer
-  const handleOpenDrawer = () => {
-    navigation.dispatch(DrawerActions.openDrawer());
+    const unsubscribeBlur = navigation.addListener('blur', () => {
+      unsubscribeSensors();
+    });
+
+    return () => {
+      unsubscribeFocus();
+      unsubscribeBlur();
+      unsubscribeSensors();
+    };
+  }, [navigation, sensorSubscription]);
+
+  // Subscribe to Accelerometer sensor
+  const subscribeSensors = () => {
+    if (sensorSubscription) return;
+    Accelerometer.setUpdateInterval(100); // 10 samples per second
+    const sub = Accelerometer.addListener(data => {
+      setAccelData(data);
+    });
+    setSensorSubscription(sub);
   };
 
-  // Flip camera lens
+  // Unsubscribe from Accelerometer sensor
+  const unsubscribeSensors = () => {
+    if (sensorSubscription) {
+      sensorSubscription.remove();
+      setSensorSubscription(null);
+    }
+  };
+
+  // Calculate Roll & Pitch in degrees
+  const getTiltAngles = () => {
+    const { x, y, z } = accelData;
+    // Calculate roll and pitch in radians then convert to degrees
+    const roll = Math.atan2(y, z) * (180 / Math.PI);
+    const pitch = Math.atan2(-x, Math.sqrt(y * y + z * z)) * (180 / Math.PI);
+    return {
+      roll: isNaN(roll) ? 0 : roll,
+      pitch: isNaN(pitch) ? 0 : pitch
+    };
+  };
+
+  const { roll, pitch } = getTiltAngles();
+  // Perfectly level status (threshold of 2 degrees on roll and pitch)
+  const isLevel = Math.abs(roll) < 2 && Math.abs(pitch) < 2;
+
+  // Toggle flash modes
+  const cycleFlash = () => {
+    setFlash(current => {
+      if (current === 'off') return 'on';
+      if (current === 'on') return 'auto';
+      return 'off';
+    });
+  };
+
+  // Toggle camera direction
   const toggleFacing = () => {
     setIsCameraReady(false);
     setFacing(current => (current === 'back' ? 'front' : 'back'));
   };
 
-  // Capture a photo
+  // Trigger snapshot capture
   const takePicture = async () => {
     if (!cameraRef.current || isCapturing) return;
 
@@ -77,11 +134,9 @@ export default function CameraScreen() {
       });
 
       if (photo?.uri) {
-        // Formulate current time
         const now = new Date();
         const formattedTime = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
         
-        // Add to history list (prepend to show latest first)
         const newPhotoItem: CapturedPhoto = { uri: photo.uri, time: formattedTime };
         setCapturedPhotosList(prev => [newPhotoItem, ...prev]);
 
@@ -121,10 +176,7 @@ export default function CameraScreen() {
           text: "Delete", 
           style: "destructive", 
           onPress: () => {
-            // Remove from history list
             setCapturedPhotosList(prev => prev.filter(p => p.uri !== photoUriToDelete));
-            
-            // If the deleted photo is currently selected in preview, close the preview
             if (capturedPhotoUri === photoUriToDelete) {
               setCapturedPhotoUri(null);
               setCaptureTime(null);
@@ -136,29 +188,31 @@ export default function CameraScreen() {
     );
   };
 
-  // Camera Ready state callback
   const onCameraReady = () => {
     setIsCameraReady(true);
   };
 
-  // 1. Permission status loading
+  const handleOpenDrawer = () => {
+    navigation.dispatch(DrawerActions.openDrawer());
+  };
+
+  // Permission loading status
   if (!permission) {
     return (
       <SafeAreaView style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#3B82F6" />
+        <ActivityIndicator size="large" color="#8E7E6A" />
         <Text style={styles.loadingText}>Verifying camera permissions...</Text>
       </SafeAreaView>
     );
   }
 
-  // 2. Permission not granted state
+  // Permission denied state
   if (!permission.granted) {
     return (
       <SafeAreaView style={styles.permissionContainer} edges={['top']}>
-        {/* Header */}
         <View style={styles.header}>
           <Pressable onPress={handleOpenDrawer} style={styles.headerButton}>
-            <Ionicons name="menu-outline" size={24} color="#FFFFFF" />
+            <Ionicons name="menu-outline" size={24} color="#8E7E6A" />
           </Pressable>
           <Text style={styles.headerTitle}>Camera Access</Text>
           <View style={{ width: 40 }} />
@@ -166,7 +220,7 @@ export default function CameraScreen() {
 
         <View style={styles.permissionContent}>
           <View style={styles.permissionIconBadge}>
-            <Ionicons name="camera-outline" size={48} color="#3B82F6" />
+            <Ionicons name="camera-outline" size={48} color="#8E7E6A" />
           </View>
           <Text style={styles.permissionTitle}>Camera Permission Required</Text>
           <Text style={styles.permissionSubtitle}>
@@ -182,10 +236,9 @@ export default function CameraScreen() {
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
-      {/* 3. Photo Preview Screen Overlay */}
+      {/* 3. Photo Preview screen */}
       {capturedPhotoUri ? (
         <View style={styles.previewContainer}>
-          {/* Preview Header with Exit button to dismiss preview */}
           <View style={styles.header}>
             <View style={{ width: 40 }} />
             <Text style={styles.headerTitle}>Photo Preview</Text>
@@ -201,11 +254,8 @@ export default function CameraScreen() {
             </Pressable>
           </View>
 
-          {/* Captured Image Viewport */}
           <View style={styles.imageWrapper}>
             <Image source={{ uri: capturedPhotoUri }} style={styles.previewImage} />
-            
-            {/* Timestamp Badge overlay */}
             {captureTime && (
               <View style={styles.timeBadge}>
                 <Ionicons name="time-outline" size={14} color="#FFFFFF" style={{ marginRight: 4 }} />
@@ -214,14 +264,12 @@ export default function CameraScreen() {
             )}
           </View>
 
-          {/* Action Footer card */}
           <View style={styles.previewFooterCard}>
             <Text style={styles.previewInfoTitle}>Inspection Asset Captured</Text>
             <Text style={styles.previewInfoSubtitle}>
               Successfully saved to your phone gallery. Ensure it captures the site elements clearly.
             </Text>
 
-            {/* History reel shown on preview screen as well so user can switch images */}
             {capturedPhotosList.length > 1 && (
               <View style={styles.previewHistorySection}>
                 <Text style={styles.historyTitle}>Other Session Captures</Text>
@@ -247,13 +295,11 @@ export default function CameraScreen() {
             )}
 
             <View style={styles.actionsRow}>
-              {/* Delete Button */}
               <Pressable style={styles.deleteBtn} onPress={() => handleDeletePhoto(capturedPhotoUri)}>
                 <Ionicons name="trash-outline" size={18} color="#EF4444" />
                 <Text style={styles.deleteBtnText}>Delete</Text>
               </Pressable>
 
-              {/* Retake Button */}
               <Pressable 
                 style={styles.retakeBtn} 
                 onPress={() => {
@@ -262,7 +308,7 @@ export default function CameraScreen() {
                   setIsCameraReady(false);
                 }}
               >
-                <Ionicons name="refresh-outline" size={18} color="#FFFFFF" />
+                <Ionicons name="refresh-outline" size={18} color="#FFFFFF" style={{ marginRight: 6 }} />
                 <Text style={styles.retakeBtnText}>Retake</Text>
               </Pressable>
             </View>
@@ -271,10 +317,9 @@ export default function CameraScreen() {
       ) : (
         // 4. Live Camera Stream Layout
         <View style={styles.cameraViewport}>
-          {/* Camera Header - Exit button redirects to Dashboard */}
           <View style={styles.header}>
             <Pressable onPress={handleOpenDrawer} style={styles.headerButton}>
-              <Ionicons name="menu-outline" size={24} color="#FFFFFF" />
+              <Ionicons name="menu-outline" size={24} color="#8E7E6A" />
             </Pressable>
             <Text style={styles.headerTitle}>Camera View</Text>
             <Pressable onPress={() => navigation.navigate('index' as never)} style={styles.headerExitButton}>
@@ -282,32 +327,115 @@ export default function CameraScreen() {
             </Pressable>
           </View>
 
-          {/* Camera Stream Viewport */}
           <View style={styles.cameraWrapper}>
             <CameraView 
               ref={cameraRef}
               style={styles.cameraView} 
               facing={facing}
+              flash={flash}
+              zoom={zoom}
               onCameraReady={onCameraReady}
             />
 
             {/* Spinner loading indicator while lens mounts */}
             {!isCameraReady && (
               <View style={styles.lensLoadingOverlay}>
-                <ActivityIndicator size="large" color="#FFFFFF" />
+                <ActivityIndicator size="large" color="#8E7E6A" />
                 <Text style={styles.lensLoadingText}>Activating Camera Lens...</Text>
               </View>
             )}
 
-            {/* Live Camera Overlays (HUD Controls positioned absolutely to prevent Metro Warnings) */}
+            {/* 4.1. Rule-of-Thirds Grid Overlay */}
+            {isCameraReady && showGrid && (
+              <View style={styles.gridOverlayContainer} pointerEvents="none">
+                <View style={styles.gridLineHorizontal} />
+                <View style={[styles.gridLineHorizontal, { top: '66.6%' }]} />
+                <View style={styles.gridLineVertical} />
+                <View style={[styles.gridLineVertical, { left: '66.6%' }]} />
+              </View>
+            )}
+
+            {/* 4.2. Advanced Bubble Level & Monospace Readings Overlay */}
+            {isCameraReady && (
+              <View style={styles.horizonOverlay} pointerEvents="none">
+                {/* Bubble Level Gauge */}
+                <View style={[styles.levelOuterCircle, isLevel && styles.levelOuterCircleSuccess]}>
+                  {/* Static Crosshair indicators */}
+                  <View style={styles.crosshairHorizontal} />
+                  <View style={styles.crosshairVertical} />
+                  
+                  {/* Dynamic Moving Bubble dot based on raw Accelerometer x & y */}
+                  <View 
+                    style={[
+                      styles.levelBubbleDot,
+                      isLevel && styles.levelBubbleDotSuccess,
+                      {
+                        transform: [
+                          { translateX: accelData.x * 25 },
+                          { translateY: -accelData.y * 25 }
+                        ]
+                      }
+                    ]} 
+                  />
+                </View>
+
+                {/* Telemetry Tilt display */}
+                <View style={styles.telemetryBadge}>
+                  <Text style={[styles.telemetryText, isLevel && styles.telemetryTextSuccess]}>
+                    ROLL: {roll.toFixed(1)}° | PITCH: {pitch.toFixed(1)}°
+                  </Text>
+                </View>
+              </View>
+            )}
+
+            {/* 4.3. HUD Overlay Controls */}
             {isCameraReady && (
               <View style={styles.hudOverlay}>
-                {/* Top lens guide description */}
-                <View style={styles.lensGuideContainer}>
-                  <Text style={styles.lensGuideText}>Align site target within the frame</Text>
+                {/* Top Toolbar panel */}
+                <View style={styles.topHudToolbar}>
+                  {/* Flash toggle */}
+                  <Pressable style={styles.hudIconBtn} onPress={cycleFlash}>
+                    <Ionicons 
+                      name={
+                        flash === 'on' 
+                          ? "flash" 
+                          : flash === 'auto' 
+                            ? "flash-sharp" 
+                            : "flash-off"
+                      } 
+                      size={20} 
+                      color="#FFFFFF" 
+                    />
+                    <Text style={styles.hudBtnLabel}>{flash.toUpperCase()}</Text>
+                  </Pressable>
+
+                  {/* Grid Toggle */}
+                  <Pressable 
+                    style={[styles.hudIconBtn, showGrid && styles.hudIconBtnActive]} 
+                    onPress={() => setShowGrid(prev => !prev)}
+                  >
+                    <Ionicons name="grid-outline" size={20} color="#FFFFFF" />
+                    <Text style={styles.hudBtnLabel}>GRID</Text>
+                  </Pressable>
                 </View>
 
                 <View style={styles.bottomHudContainer}>
+                  {/* Zoom controls pill */}
+                  <View style={styles.zoomContainer}>
+                    <Pressable 
+                      style={[styles.zoomPill, zoom === 0 && styles.zoomPillActive]} 
+                      onPress={() => setZoom(0)}
+                    >
+                      <Text style={[styles.zoomText, zoom === 0 && { color: '#000000' }]}>1X</Text>
+                    </Pressable>
+                    <Pressable 
+                      style={[styles.zoomPill, zoom === 0.2 && styles.zoomPillActive]} 
+                      onPress={() => setZoom(0.2)}
+                    >
+                      <Text style={[styles.zoomText, zoom === 0.2 && { color: '#000000' }]}>2X</Text>
+                    </Pressable>
+                  </View>
+
                   {/* Session Capture History Reel */}
                   {capturedPhotosList.length > 0 && (
                     <View style={styles.historyContainer}>
@@ -330,7 +458,7 @@ export default function CameraScreen() {
                     </View>
                   )}
 
-                  {/* Shutter Controls segment */}
+                  {/* Shutter controls */}
                   <View style={styles.controlsRow}>
                     <View style={styles.sideHudButtonPlaceholder} />
 
@@ -364,39 +492,39 @@ export default function CameraScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#040712', // Midnight Obsidian
+    backgroundColor: '#FAF8F5',
   },
   loadingContainer: {
     flex: 1,
-    backgroundColor: '#040712',
+    backgroundColor: '#FAF8F5',
     justifyContent: 'center',
     alignItems: 'center',
   },
   loadingText: {
     fontSize: 14,
-    color: '#94A3B8',
+    color: '#7C7267',
     fontWeight: '600',
     marginTop: 12,
   },
   header: {
     flexDirection: 'row',
     height: 64,
-    backgroundColor: '#070A13', // Midnight Obsidian Header
+    backgroundColor: '#FFFFFF',
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 20,
     borderBottomWidth: 1.5,
-    borderBottomColor: '#1E293B',
+    borderBottomColor: '#EFECE6',
   },
   headerButton: {
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: '#0B0F1C',
+    backgroundColor: '#FAF8F5',
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#1E293B',
+    borderColor: '#EFECE6',
   },
   headerExitButton: {
     width: 40,
@@ -411,12 +539,12 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 18,
     fontWeight: '700',
-    color: '#FFFFFF',
+    color: '#2C261F',
     letterSpacing: 0.4,
   },
   permissionContainer: {
     flex: 1,
-    backgroundColor: '#040712',
+    backgroundColor: '#FAF8F5',
   },
   permissionContent: {
     flex: 1,
@@ -428,33 +556,33 @@ const styles = StyleSheet.create({
     width: 96,
     height: 96,
     borderRadius: 48,
-    backgroundColor: '#0B0F1C',
+    backgroundColor: '#FFFFFF',
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 20,
     borderWidth: 1.5,
-    borderColor: '#1E293B',
+    borderColor: '#EFECE6',
   },
   permissionTitle: {
     fontSize: 20,
     fontWeight: '800',
-    color: '#FFFFFF',
+    color: '#2C261F',
     marginBottom: 10,
     textAlign: 'center',
   },
   permissionSubtitle: {
     fontSize: 14,
-    color: '#94A3B8',
+    color: '#7C7267',
     lineHeight: 22,
     textAlign: 'center',
     marginBottom: 28,
   },
   permissionBtn: {
-    backgroundColor: '#3B82F6',
+    backgroundColor: '#8E7E6A',
     paddingVertical: 14,
     paddingHorizontal: 32,
     borderRadius: 24,
-    shadowColor: '#3B82F6',
+    shadowColor: '#8E7E6A',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.22,
     shadowRadius: 8,
@@ -470,14 +598,14 @@ const styles = StyleSheet.create({
   },
   imageWrapper: {
     flex: 1,
-    backgroundColor: '#090D16', // Dark frame background
+    backgroundColor: '#090D16',
     margin: 16,
     borderRadius: 24,
     overflow: 'hidden',
     borderWidth: 1.5,
-    borderColor: '#1E293B',
+    borderColor: '#EFECE6',
     position: 'relative',
-    shadowColor: '#3B82F6', // Sleek neon shadow halo
+    shadowColor: '#7C7267',
     shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.08,
     shadowRadius: 16,
@@ -507,12 +635,12 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   previewFooterCard: {
-    backgroundColor: '#0B0F1C', // Midnight Obsidian Card
+    backgroundColor: '#FFFFFF',
     borderTopLeftRadius: 28,
     borderTopRightRadius: 28,
     padding: 20,
     borderTopWidth: 1.5,
-    borderTopColor: '#1E293B',
+    borderTopColor: '#EFECE6',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: -6 },
     shadowOpacity: 0.03,
@@ -522,12 +650,12 @@ const styles = StyleSheet.create({
   previewInfoTitle: {
     fontSize: 16,
     fontWeight: '800',
-    color: '#FFFFFF',
+    color: '#2C261F',
     marginBottom: 4,
   },
   previewInfoSubtitle: {
     fontSize: 12,
-    color: '#94A3B8',
+    color: '#7C7267',
     lineHeight: 18,
     marginBottom: 16,
   },
@@ -561,10 +689,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     height: 48,
-    backgroundColor: '#3B82F6', // Upgraded to brand blue for primary confirmation
+    backgroundColor: '#8E7E6A',
     borderRadius: 24,
     gap: 6,
-    shadowColor: '#3B82F6',
+    shadowColor: '#8E7E6A',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.15,
     shadowRadius: 6,
@@ -597,15 +725,113 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: '#070A13', // Obsidian loader background
+    backgroundColor: '#FAF8F5',
     justifyContent: 'center',
     alignItems: 'center',
   },
   lensLoadingText: {
     fontSize: 14,
-    color: '#94A3B8',
+    color: '#7C7267',
     fontWeight: '600',
     marginTop: 12,
+  },
+  gridOverlayContainer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+  },
+  gridLineHorizontal: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    height: 1,
+    backgroundColor: 'rgba(255, 255, 255, 0.35)',
+    top: '33.3%',
+  },
+  gridLineVertical: {
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    width: 1,
+    backgroundColor: 'rgba(255, 255, 255, 0.35)',
+    left: '33.3%',
+  },
+  horizonOverlay: {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    width: 160,
+    height: 160,
+    marginLeft: -80,
+    marginTop: -80,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  levelOuterCircle: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    borderWidth: 1.5,
+    borderStyle: 'dashed',
+    borderColor: 'rgba(255, 255, 255, 0.6)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'relative',
+  },
+  levelOuterCircleSuccess: {
+    borderColor: '#10B981',
+    borderStyle: 'solid',
+    borderWidth: 2,
+  },
+  crosshairHorizontal: {
+    position: 'absolute',
+    width: 12,
+    height: 1,
+    backgroundColor: 'rgba(255, 255, 255, 0.6)',
+  },
+  crosshairVertical: {
+    position: 'absolute',
+    width: 1,
+    height: 12,
+    backgroundColor: 'rgba(255, 255, 255, 0.6)',
+  },
+  levelBubbleDot: {
+    width: 14,
+    height: 14,
+    borderRadius: 7,
+    backgroundColor: '#F59E0B',
+    position: 'absolute',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.3,
+    shadowRadius: 2,
+    elevation: 2,
+  },
+  levelBubbleDotSuccess: {
+    backgroundColor: '#10B981',
+    width: 16,
+    height: 16,
+    borderRadius: 8,
+  },
+  telemetryBadge: {
+    backgroundColor: 'rgba(15, 23, 42, 0.65)',
+    paddingVertical: 4,
+    paddingHorizontal: 10,
+    borderRadius: 12,
+    marginTop: 12,
+    borderWidth: 0.5,
+    borderColor: 'rgba(255, 255, 255, 0.1)',
+  },
+  telemetryText: {
+    fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace',
+    fontSize: 9,
+    color: '#FFFFFF',
+    fontWeight: '700',
+  },
+  telemetryTextSuccess: {
+    color: '#10B981',
   },
   hudOverlay: {
     position: 'absolute',
@@ -617,36 +843,70 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
     padding: 20,
   },
-  lensGuideContainer: {
-    alignSelf: 'center',
-    backgroundColor: 'rgba(15, 23, 42, 0.6)',
-    paddingVertical: 6,
-    paddingHorizontal: 16,
-    borderRadius: 20,
-    marginTop: 10,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.1)',
+  topHudToolbar: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
-  lensGuideText: {
+  hudIconBtn: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    backgroundColor: 'rgba(15, 23, 42, 0.6)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.15)',
+  },
+  hudIconBtnActive: {
+    backgroundColor: '#8E7E6A',
+    borderColor: '#FFFFFF',
+  },
+  hudBtnLabel: {
+    fontSize: 8,
     color: '#FFFFFF',
-    fontSize: 12,
-    fontWeight: '600',
+    fontWeight: '800',
+    marginTop: 2,
     letterSpacing: 0.3,
   },
   bottomHudContainer: {
     width: '100%',
     gap: 16,
   },
+  zoomContainer: {
+    flexDirection: 'row',
+    backgroundColor: 'rgba(15, 23, 42, 0.6)',
+    borderRadius: 20,
+    padding: 4,
+    alignSelf: 'center',
+    gap: 4,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.15)',
+  },
+  zoomPill: {
+    width: 36,
+    height: 30,
+    borderRadius: 15,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  zoomPillActive: {
+    backgroundColor: '#FFFFFF',
+  },
+  zoomText: {
+    fontSize: 10,
+    fontWeight: '800',
+    color: '#FFFFFF',
+  },
   historyContainer: {
-    backgroundColor: 'rgba(7, 11, 22, 0.8)', // Translucent obsidian
+    backgroundColor: 'rgba(255, 255, 255, 0.85)',
     borderRadius: 18,
     padding: 10,
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.08)',
+    borderColor: 'rgba(239, 236, 230, 0.5)',
   },
   historyTitle: {
     fontSize: 10,
-    color: '#94A3B8',
+    color: '#7C7267',
     fontWeight: '700',
     textTransform: 'uppercase',
     marginBottom: 8,
@@ -666,7 +926,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   thumbnailWrapperSelected: {
-    borderColor: '#3B82F6', // Highlight selected preview thumbnail
+    borderColor: '#8E7E6A',
     borderWidth: 2,
   },
   thumbnailImage: {

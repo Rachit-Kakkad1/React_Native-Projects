@@ -24,10 +24,11 @@ function CustomDrawerContent(props: any) {
   const isDashboardActive = activeTabName === 'index';
   const isSurveyActive = activeTabName === 'new-survey';
   const isCameraActive = activeTabName === 'camera';
+  const isLocationActive = activeTabName === 'location';
 
   return (
     <DrawerContentScrollView {...props} contentContainerStyle={styles.drawerScrollView}>
-      {/* 1. Custom Profile Header - Minimalist Side-by-Side Design */}
+      {/* 1. Custom Profile Header - Minimalist Warm Beige Design */}
       <View style={styles.drawerHeader}>
         <View style={styles.avatarContainer}>
           <Image 
@@ -51,14 +52,14 @@ function CustomDrawerContent(props: any) {
             <Ionicons 
               name={isDashboardActive ? "grid" : "grid-outline"} 
               size={22} 
-              color={isDashboardActive ? '#3B82F6' : '#94A3B8'} 
+              color={isDashboardActive ? '#8E7E6A' : '#7C7267'} 
             />
           )}
           focused={isDashboardActive}
           onPress={() => props.navigation.navigate('(tabs)', { screen: 'index' })}
-          activeTintColor="#3B82F6"
-          inactiveTintColor="#94A3B8"
-          activeBackgroundColor="#1E293B"
+          activeTintColor="#8E7E6A"
+          inactiveTintColor="#7C7267"
+          activeBackgroundColor="#F4F0E8"
           labelStyle={{ fontSize: 14, fontWeight: '600', marginLeft: -8 }}
           style={{ borderRadius: 12, marginVertical: 4, paddingHorizontal: 8, marginHorizontal: 12 }}
         />
@@ -70,14 +71,14 @@ function CustomDrawerContent(props: any) {
             <Ionicons 
               name={isSurveyActive ? "document-text" : "document-text-outline"} 
               size={22} 
-              color={isSurveyActive ? '#3B82F6' : '#94A3B8'} 
+              color={isSurveyActive ? '#8E7E6A' : '#7C7267'} 
             />
           )}
           focused={isSurveyActive}
           onPress={() => props.navigation.navigate('(tabs)', { screen: 'new-survey' })}
-          activeTintColor="#3B82F6"
-          inactiveTintColor="#94A3B8"
-          activeBackgroundColor="#1E293B"
+          activeTintColor="#8E7E6A"
+          inactiveTintColor="#7C7267"
+          activeBackgroundColor="#F4F0E8"
           labelStyle={{ fontSize: 14, fontWeight: '600', marginLeft: -8 }}
           style={{ borderRadius: 12, marginVertical: 4, paddingHorizontal: 8, marginHorizontal: 12 }}
         />
@@ -89,14 +90,33 @@ function CustomDrawerContent(props: any) {
             <Ionicons 
               name={isCameraActive ? "camera" : "camera-outline"} 
               size={22} 
-              color={isCameraActive ? '#3B82F6' : '#94A3B8'} 
+              color={isCameraActive ? '#8E7E6A' : '#7C7267'} 
             />
           )}
           focused={isCameraActive}
           onPress={() => props.navigation.navigate('(tabs)', { screen: 'camera' })}
-          activeTintColor="#3B82F6"
-          inactiveTintColor="#94A3B8"
-          activeBackgroundColor="#1E293B"
+          activeTintColor="#8E7E6A"
+          inactiveTintColor="#7C7267"
+          activeBackgroundColor="#F4F0E8"
+          labelStyle={{ fontSize: 14, fontWeight: '600', marginLeft: -8 }}
+          style={{ borderRadius: 12, marginVertical: 4, paddingHorizontal: 8, marginHorizontal: 12 }}
+        />
+
+        {/* Location Link */}
+        <DrawerItem
+          label="Location"
+          icon={({ size }) => (
+            <Ionicons 
+              name={isLocationActive ? "location" : "location-outline"} 
+              size={22} 
+              color={isLocationActive ? '#8E7E6A' : '#7C7267'} 
+            />
+          )}
+          focused={isLocationActive}
+          onPress={() => props.navigation.navigate('(tabs)', { screen: 'location' })}
+          activeTintColor="#8E7E6A"
+          inactiveTintColor="#7C7267"
+          activeBackgroundColor="#F4F0E8"
           labelStyle={{ fontSize: 14, fontWeight: '600', marginLeft: -8 }}
           style={{ borderRadius: 12, marginVertical: 4, paddingHorizontal: 8, marginHorizontal: 12 }}
         />
@@ -117,7 +137,7 @@ export default function RootLayout() {
             headerShown: false,
             drawerStyle: {
               width: 290,
-              backgroundColor: '#070A13', // Obsidian Dark
+              backgroundColor: '#FAF8F5', // Warm Beige Alabaster
             },
           }}
         >
@@ -133,18 +153,18 @@ export default function RootLayout() {
 const styles = StyleSheet.create({
   drawerScrollView: {
     paddingTop: 0,
-    backgroundColor: '#070A13', // Midnight Obsidian
+    backgroundColor: '#FAF8F5', // Warm Beige Alabaster
     flex: 1,
   },
   drawerHeader: {
-    backgroundColor: '#070A13', // Midnight Obsidian Header
+    backgroundColor: '#FAF8F5', // Warm Beige Header
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 20,
     paddingTop: 64,
     paddingBottom: 24,
     borderBottomWidth: 1.5,
-    borderBottomColor: '#1E293B', // Dark border line
+    borderBottomColor: '#EFECE6', // Soft Sand Border
     marginBottom: 16,
   },
   avatarContainer: {
@@ -152,13 +172,13 @@ const styles = StyleSheet.create({
     height: 58,
     borderRadius: 29,
     borderWidth: 1.5,
-    borderColor: '#1E293B',
+    borderColor: '#EFECE6',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#0B0F1C',
-    shadowColor: '#000',
+    backgroundColor: '#FFFFFF',
+    shadowColor: '#7C7267',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
+    shadowOpacity: 0.05,
     shadowRadius: 4,
     elevation: 2,
   },
@@ -173,19 +193,19 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   studentName: {
-    color: '#FFFFFF', // High contrast white name
+    color: '#2C261F', // Charcoal Coffee Name
     fontSize: 16,
     fontWeight: '700',
     letterSpacing: 0.2,
   },
   studentInfo: {
-    color: '#94A3B8', // Slate 400
+    color: '#7C7267', // Warm Taupe
     fontSize: 12,
     fontWeight: '500',
     marginTop: 3,
   },
   studentBatch: {
-    color: '#64748B', // Slate 500
+    color: '#A2988E', // Muted Sand Info
     fontSize: 11,
     fontWeight: '500',
     marginTop: 1,

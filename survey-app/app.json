@@ -52,6 +52,13 @@
           "photosPermission": "Allow survey-app to save site inspection photos to your library.",
           "savePhotosPermission": "Allow survey-app to save site inspection photos to your library."
         }
+      ],
+      [
+        "expo-location",
+        {
+          "locationAlwaysPermission": "Allow survey-app to access your location to pin site surveys.",
+          "locationWhenInUsePermission": "Allow survey-app to access your location to pin site surveys."
+        }
       ]
     ],
     "experiments": {

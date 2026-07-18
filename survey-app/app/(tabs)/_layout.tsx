@@ -7,13 +7,13 @@ export default function TabLayout() {
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: '#3B82F6', // Electric Cobalt Blue
-        tabBarInactiveTintColor: '#64748B', // Slate 500
+        tabBarActiveTintColor: '#8E7E6A', // Desert Khaki Gold (Primary Accent)
+        tabBarInactiveTintColor: '#B6AEA2', // Muted Warm Sand (Secondary Accent)
         tabBarStyle: {
           height: 60,
           paddingBottom: 8,
-          backgroundColor: '#0B0F1C', // Midnight Obsidian Tab Bar
-          borderTopColor: '#1E293B', // Dark border line
+          backgroundColor: '#FFFFFF', // Crisp White Background
+          borderTopColor: '#EFECE6', // Soft Sand Border
           borderTopWidth: 1.5,
         },
         tabBarLabelStyle: {
@@ -46,6 +46,15 @@ export default function TabLayout() {
           title: 'Camera',
           tabBarIcon: ({ color, focused }) => (
             <Ionicons name={focused ? "camera" : "camera-outline"} size={22} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="location"
+        options={{
+          title: 'Location',
+          tabBarIcon: ({ color, focused }) => (
+            <Ionicons name={focused ? "location" : "location-outline"} size={22} color={color} />
           ),
         }}
       />
