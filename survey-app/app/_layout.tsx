@@ -25,6 +25,8 @@ function CustomDrawerContent(props: any) {
   const isSurveyActive = activeTabName === 'new-survey';
   const isCameraActive = activeTabName === 'camera';
   const isLocationActive = activeTabName === 'location';
+  const isContactsActive = activeTabName === 'contacts';
+  const isClipboardActive = activeTabName === 'clipboard';
 
   return (
     <DrawerContentScrollView {...props} contentContainerStyle={styles.drawerScrollView}>
@@ -120,11 +122,49 @@ function CustomDrawerContent(props: any) {
           labelStyle={{ fontSize: 14, fontWeight: '600', marginLeft: -8 }}
           style={{ borderRadius: 12, marginVertical: 4, paddingHorizontal: 8, marginHorizontal: 12 }}
         />
+
+        {/* Contacts Link */}
+        <DrawerItem
+          label="Contacts"
+          icon={({ size }) => (
+            <Ionicons 
+              name={isContactsActive ? "people" : "people-outline"} 
+              size={22} 
+              color={isContactsActive ? '#8E7E6A' : '#7C7267'} 
+            />
+          )}
+          focused={isContactsActive}
+          onPress={() => props.navigation.navigate('(tabs)', { screen: 'contacts' })}
+          activeTintColor="#8E7E6A"
+          inactiveTintColor="#7C7267"
+          activeBackgroundColor="#F4F0E8"
+          labelStyle={{ fontSize: 14, fontWeight: '600', marginLeft: -8 }}
+          style={{ borderRadius: 12, marginVertical: 4, paddingHorizontal: 8, marginHorizontal: 12 }}
+        />
+
+        {/* Clipboard Link */}
+        <DrawerItem
+          label="Clipboard"
+          icon={({ size }) => (
+            <Ionicons 
+              name={isClipboardActive ? "clipboard" : "clipboard-outline"} 
+              size={22} 
+              color={isClipboardActive ? '#8E7E6A' : '#7C7267'} 
+            />
+          )}
+          focused={isClipboardActive}
+          onPress={() => props.navigation.navigate('(tabs)', { screen: 'clipboard' })}
+          activeTintColor="#8E7E6A"
+          inactiveTintColor="#7C7267"
+          activeBackgroundColor="#F4F0E8"
+          labelStyle={{ fontSize: 14, fontWeight: '600', marginLeft: -8 }}
+          style={{ borderRadius: 12, marginVertical: 4, paddingHorizontal: 8, marginHorizontal: 12 }}
+        />
       </View>
     </DrawerContentScrollView>
   );
 }
-
+  
 export default function RootLayout() {
   const colorScheme = useColorScheme();
 

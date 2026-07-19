@@ -58,6 +58,24 @@ export default function TabLayout() {
           ),
         }}
       />
+      <Tabs.Screen
+        name="contacts"
+        options={{
+          title: 'Contacts',
+          tabBarIcon: ({ color, focused }) => (
+            <Ionicons name={focused ? "people" : "people-outline"} size={22} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="clipboard"
+        options={{
+          title: 'Clipboard',
+          tabBarIcon: ({ color, focused }) => (
+            <Ionicons name={focused ? "clipboard" : "clipboard-outline"} size={22} color={color} />
+          ),
+        }}
+      />
     </Tabs>
   );
 }

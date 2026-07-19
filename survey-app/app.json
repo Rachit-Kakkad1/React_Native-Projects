@@ -59,6 +59,12 @@
           "locationAlwaysPermission": "Allow survey-app to access your location to pin site surveys.",
           "locationWhenInUsePermission": "Allow survey-app to access your location to pin site surveys."
         }
+      ],
+      [
+        "expo-contacts",
+        {
+          "contactsPermission": "Allow survey-app to access your contacts to log site inspection references."
+        }
       ]
     ],
     "experiments": {
