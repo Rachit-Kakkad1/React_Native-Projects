@@ -188,9 +188,9 @@ export default function CameraScreen() {
     );
   };
 
-  const onCameraReady = () => {
+  function onCameraReady() {
     setIsCameraReady(true);
-  };
+  }
 
   const handleOpenDrawer = () => {
     navigation.dispatch(DrawerActions.openDrawer());

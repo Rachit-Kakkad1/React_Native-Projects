@@ -22,6 +22,7 @@ export default function TabLayout() {
         },
       }}
     >
+      {/* 1. Dashboard */}
       <Tabs.Screen
         name="index"
         options={{
@@ -31,15 +32,8 @@ export default function TabLayout() {
           ),
         }}
       />
-      <Tabs.Screen
-        name="new-survey"
-        options={{
-          title: 'New Survey',
-          tabBarIcon: ({ color, focused }) => (
-            <Ionicons name={focused ? "add-circle" : "add-circle-outline"} size={22} color={color} />
-          ),
-        }}
-      />
+
+      {/* 2. Camera */}
       <Tabs.Screen
         name="camera"
         options={{
@@ -49,15 +43,19 @@ export default function TabLayout() {
           ),
         }}
       />
+
+      {/* 3. New Survey */}
       <Tabs.Screen
-        name="location"
+        name="new-survey"
         options={{
-          title: 'Location',
+          title: 'New Survey',
           tabBarIcon: ({ color, focused }) => (
-            <Ionicons name={focused ? "location" : "location-outline"} size={22} color={color} />
+            <Ionicons name={focused ? "add-circle" : "add-circle-outline"} size={22} color={color} />
           ),
         }}
       />
+
+      {/* 4. Contacts */}
       <Tabs.Screen
         name="contacts"
         options={{
@@ -67,13 +65,36 @@ export default function TabLayout() {
           ),
         }}
       />
+
+      {/* 5. Location */}
+      <Tabs.Screen
+        name="location"
+        options={{
+          title: 'Location',
+          tabBarIcon: ({ color, focused }) => (
+            <Ionicons name={focused ? "location" : "location-outline"} size={22} color={color} />
+          ),
+        }}
+      />
+
       <Tabs.Screen
         name="clipboard"
         options={{
-          title: 'Clipboard',
-          tabBarIcon: ({ color, focused }) => (
-            <Ionicons name={focused ? "clipboard" : "clipboard-outline"} size={22} color={color} />
-          ),
+          href: null,
+        }}
+      />
+
+      <Tabs.Screen
+        name="history"
+        options={{
+          href: null,
+        }}
+      />
+
+      <Tabs.Screen
+        name="preview"
+        options={{
+          href: null,
         }}
       />
     </Tabs>

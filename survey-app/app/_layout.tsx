@@ -27,6 +27,8 @@ function CustomDrawerContent(props: any) {
   const isLocationActive = activeTabName === 'location';
   const isContactsActive = activeTabName === 'contacts';
   const isClipboardActive = activeTabName === 'clipboard';
+  const isHistoryActive = activeTabName === 'history';
+  const isPreviewActive = activeTabName === 'preview';
 
   return (
     <DrawerContentScrollView {...props} contentContainerStyle={styles.drawerScrollView}>
@@ -47,7 +49,7 @@ function CustomDrawerContent(props: any) {
 
       {/* 2. Custom Menu Navigation List (Google/Apple design system highlights) */}
       <View style={styles.listContainer}>
-        {/* Dashboard Link */}
+        {/* 1. Dashboard */}
         <DrawerItem
           label="Dashboard"
           icon={({ size }) => (
@@ -65,8 +67,27 @@ function CustomDrawerContent(props: any) {
           labelStyle={{ fontSize: 14, fontWeight: '600', marginLeft: -8 }}
           style={{ borderRadius: 12, marginVertical: 4, paddingHorizontal: 8, marginHorizontal: 12 }}
         />
+
+        {/* 2. Camera */}
+        <DrawerItem
+          label="Camera"
+          icon={({ size }) => (
+            <Ionicons 
+              name={isCameraActive ? "camera" : "camera-outline"} 
+              size={22} 
+              color={isCameraActive ? '#8E7E6A' : '#7C7267'} 
+            />
+          )}
+          focused={isCameraActive}
+          onPress={() => props.navigation.navigate('(tabs)', { screen: 'camera' })}
+          activeTintColor="#8E7E6A"
+          inactiveTintColor="#7C7267"
+          activeBackgroundColor="#F4F0E8"
+          labelStyle={{ fontSize: 14, fontWeight: '600', marginLeft: -8 }}
+          style={{ borderRadius: 12, marginVertical: 4, paddingHorizontal: 8, marginHorizontal: 12 }}
+        />
         
-        {/* Survey Link */}
+        {/* 3. New Survey */}
         <DrawerItem
           label="Survey"
           icon={({ size }) => (
@@ -85,45 +106,7 @@ function CustomDrawerContent(props: any) {
           style={{ borderRadius: 12, marginVertical: 4, paddingHorizontal: 8, marginHorizontal: 12 }}
         />
 
-        {/* Camera Link */}
-        <DrawerItem
-          label="Camera"
-          icon={({ size }) => (
-            <Ionicons 
-              name={isCameraActive ? "camera" : "camera-outline"} 
-              size={22} 
-              color={isCameraActive ? '#8E7E6A' : '#7C7267'} 
-            />
-          )}
-          focused={isCameraActive}
-          onPress={() => props.navigation.navigate('(tabs)', { screen: 'camera' })}
-          activeTintColor="#8E7E6A"
-          inactiveTintColor="#7C7267"
-          activeBackgroundColor="#F4F0E8"
-          labelStyle={{ fontSize: 14, fontWeight: '600', marginLeft: -8 }}
-          style={{ borderRadius: 12, marginVertical: 4, paddingHorizontal: 8, marginHorizontal: 12 }}
-        />
-
-        {/* Location Link */}
-        <DrawerItem
-          label="Location"
-          icon={({ size }) => (
-            <Ionicons 
-              name={isLocationActive ? "location" : "location-outline"} 
-              size={22} 
-              color={isLocationActive ? '#8E7E6A' : '#7C7267'} 
-            />
-          )}
-          focused={isLocationActive}
-          onPress={() => props.navigation.navigate('(tabs)', { screen: 'location' })}
-          activeTintColor="#8E7E6A"
-          inactiveTintColor="#7C7267"
-          activeBackgroundColor="#F4F0E8"
-          labelStyle={{ fontSize: 14, fontWeight: '600', marginLeft: -8 }}
-          style={{ borderRadius: 12, marginVertical: 4, paddingHorizontal: 8, marginHorizontal: 12 }}
-        />
-
-        {/* Contacts Link */}
+        {/* 4. Contacts */}
         <DrawerItem
           label="Contacts"
           icon={({ size }) => (
@@ -142,7 +125,26 @@ function CustomDrawerContent(props: any) {
           style={{ borderRadius: 12, marginVertical: 4, paddingHorizontal: 8, marginHorizontal: 12 }}
         />
 
-        {/* Clipboard Link */}
+        {/* 5. Location */}
+        <DrawerItem
+          label="Location"
+          icon={({ size }) => (
+            <Ionicons 
+              name={isLocationActive ? "location" : "location-outline"} 
+              size={22} 
+              color={isLocationActive ? '#8E7E6A' : '#7C7267'} 
+            />
+          )}
+          focused={isLocationActive}
+          onPress={() => props.navigation.navigate('(tabs)', { screen: 'location' })}
+          activeTintColor="#8E7E6A"
+          inactiveTintColor="#7C7267"
+          activeBackgroundColor="#F4F0E8"
+          labelStyle={{ fontSize: 14, fontWeight: '600', marginLeft: -8 }}
+          style={{ borderRadius: 12, marginVertical: 4, paddingHorizontal: 8, marginHorizontal: 12 }}
+        />
+
+        {/* 6. Clipboard */}
         <DrawerItem
           label="Clipboard"
           icon={({ size }) => (
@@ -154,6 +156,44 @@ function CustomDrawerContent(props: any) {
           )}
           focused={isClipboardActive}
           onPress={() => props.navigation.navigate('(tabs)', { screen: 'clipboard' })}
+          activeTintColor="#8E7E6A"
+          inactiveTintColor="#7C7267"
+          activeBackgroundColor="#F4F0E8"
+          labelStyle={{ fontSize: 14, fontWeight: '600', marginLeft: -8 }}
+          style={{ borderRadius: 12, marginVertical: 4, paddingHorizontal: 8, marginHorizontal: 12 }}
+        />
+
+        {/* 7. History */}
+        <DrawerItem
+          label="History"
+          icon={({ size }) => (
+            <Ionicons 
+              name={isHistoryActive ? "list" : "list-outline"} 
+              size={22} 
+              color={isHistoryActive ? '#8E7E6A' : '#7C7267'} 
+            />
+          )}
+          focused={isHistoryActive}
+          onPress={() => props.navigation.navigate('(tabs)', { screen: 'history' })}
+          activeTintColor="#8E7E6A"
+          inactiveTintColor="#7C7267"
+          activeBackgroundColor="#F4F0E8"
+          labelStyle={{ fontSize: 14, fontWeight: '600', marginLeft: -8 }}
+          style={{ borderRadius: 12, marginVertical: 4, paddingHorizontal: 8, marginHorizontal: 12 }}
+        />
+
+        {/* 8. Preview */}
+        <DrawerItem
+          label="Preview"
+          icon={({ size }) => (
+            <Ionicons 
+              name={isPreviewActive ? "eye" : "eye-outline"} 
+              size={22} 
+              color={isPreviewActive ? '#8E7E6A' : '#7C7267'} 
+            />
+          )}
+          focused={isPreviewActive}
+          onPress={() => props.navigation.navigate('(tabs)', { screen: 'preview' })}
           activeTintColor="#8E7E6A"
           inactiveTintColor="#7C7267"
           activeBackgroundColor="#F4F0E8"

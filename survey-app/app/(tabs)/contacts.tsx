@@ -57,6 +57,9 @@ export default function ContactsScreen() {
   const [newEmail, setNewEmail] = useState('');
   const [newJobTitle, setNewJobTitle] = useState('Inspector'); // Mapped category
 
+  // Contact phone number visibility state (revealed status is false by default)
+  const [revealedPhoneNumbers, setRevealedPhoneNumbers] = useState<Record<string, boolean>>({});
+
   // Alphabet list for letter filter tabs
   const alphabet = ["ALL", ..."ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("")];
 
@@ -66,6 +69,17 @@ export default function ContactsScreen() {
 
   const handleOpenDrawer = () => {
     navigation.dispatch(DrawerActions.openDrawer());
+  };
+
+  const togglePhoneNumberVisibility = (id: string) => {
+    setRevealedPhoneNumbers(prev => ({
+      ...prev,
+      [id]: !prev[id]
+    }));
+  };
+
+  const maskPhoneNumber = (num: string) => {
+    return num.replace(/\d/g, '•');
   };
 
   // Query device permissions
@@ -390,9 +404,25 @@ export default function ContactsScreen() {
               {item.jobTitle ? (
                 <Text style={styles.jobTitleText} numberOfLines={1}>{item.jobTitle}</Text>
               ) : null}
-              <Text style={[styles.contactPhone, !primaryNumber && styles.contactPhoneEmpty]}>
-                {primaryNumber ? primaryNumber : 'No Number'}
-              </Text>
+              <View style={styles.phoneContainer}>
+                <Text style={[styles.contactPhone, !primaryNumber && styles.contactPhoneEmpty]}>
+                  {primaryNumber 
+                    ? (!revealedPhoneNumbers[item.id] ? maskPhoneNumber(primaryNumber) : primaryNumber) 
+                    : 'No Number'}
+                </Text>
+                {primaryNumber && (
+                  <Pressable 
+                    style={styles.eyeBtn}
+                    onPress={() => togglePhoneNumberVisibility(item.id)}
+                  >
+                    <Ionicons 
+                      name={!revealedPhoneNumbers[item.id] ? "eye-off-outline" : "eye-outline"} 
+                      size={14} 
+                      color="#8E7E6A" 
+                    />
+                  </Pressable>
+                )}
+              </View>
             </View>
           </View>
 
@@ -1334,6 +1364,17 @@ const styles = StyleSheet.create({
   contactPhoneEmpty: {
     color: '#EF4444',
     fontStyle: 'italic',
+  },
+  phoneContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
+  eyeBtn: {
+    paddingHorizontal: 4,
+    paddingVertical: 2,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   favoriteButton: {
     padding: 8,
